@@ -46,21 +46,31 @@
     <body>
         <h1>SIP Calculator</h1>
         <div class="container">
-            <input type="number" id="sip_amount" placeholder="Monthly Investment">
-            <input type="number" id="years" placeholder="Duration (Years)">
-            <input type="number" id="return_rate" placeholder="Expected Return Rate">
-            <input type="number" id="increase_rate" placeholder="Annual Increase Rate">
+            <input type="number" id="sip_amount" placeholder="Monthly Investment" oninput="clearResult()">
+            <input type="number" id="years" placeholder="Duration (Years)" oninput="clearResult()">
+            <input type="number" id="return_rate" placeholder="Expected Return Rate" oninput="clearResult()">
+            <input type="number" id="increase_rate" placeholder="Annual Increase Rate" oninput="clearResult()">
             <button onclick="calculateSIP()">Calculate</button>
         </div>
         <div class="result" id="result"></div>
         <img id="graph" src="" width="500px" style="display: none;">
 
         <script>
+            function clearResult() {
+                document.getElementById('result').innerHTML = "";
+                document.getElementById('graph').style.display = "none";
+            }
+
             function calculateSIP() {
                 let sip_amount = document.getElementById('sip_amount').value;
                 let years = document.getElementById('years').value;
                 let return_rate = document.getElementById('return_rate').value;
                 let increase_rate = document.getElementById('increase_rate').value;
+
+                // Clear previous result & graph before fetching new data
+                document.getElementById('result').innerHTML = "Calculating...";
+                let graphElement = document.getElementById("graph");
+                graphElement.style.display = "none"; // Hide graph until new one loads
 
                 fetch('/calculate_sip', {
                     method: 'POST',
@@ -78,13 +88,14 @@
                 .then(data => {
                     document.getElementById('result').innerHTML = `Final Amount: ₹${data.final_amount}`;
 
-                    let graphElement = document.getElementById("graph");
-                    if (data.graph_url) {
-                        graphElement.src = data.graph_url + "?timestamp=" + new Date().getTime();  // Force reload
-                        graphElement.style.display = "block";  // Show the graph
-                    }
+                    // Reload the graph with a unique timestamp to force refresh
+                    graphElement.src = data.graph_url + "?timestamp=" + new Date().getTime();  // Force reload
+                    graphElement.style.display = "block";  // Show the graph
                 })
-                .catch(error => console.error('Error:', error));
+                .catch((error) => {
+                    console.error('Error:', error);
+                    document.getElementById('result').innerHTML = "Error occurred. Please try again.";
+                });
             }
         </script>
     </body>
