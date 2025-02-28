@@ -1,44 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>SIPahi</title>
-        <style>
-            body {
-                background-color: #D1F8EF;
-                text-align: center;
-                font-family: 'Poppins', sans-serif;
-            }
-            h1 {
-                color: #3674B5;
-                font-size: 60px;
-                margin-top: 20%;
-            }
-            p {
-                color: #578FCA;
-                font-size: 20px;
-            }
-            .btn {
-                background-color: #A1E3F9;
-                color: white;
-                padding: 15px 30px;
-                font-size: 18px;
-                border: none;
-                border-radius: 15px;
-                cursor: pointer;
-                transition: all 0.3s ease;
-            }
-            .btn:hover {
-                background-color: #578FCA;
-                transform: scale(1.05);
-            }
-        </style>
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIPahi</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
-    <body>
-        <h1>SIPahi</h1>
-        <p>Smart SIP Investments Made Simple</p>
-        <a href="/calculator"><button class="btn">Get Started</button></a>
-    </body>
+        body {
+            background-color: #2E1F27; /* Deep Brown */
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+            color: #D9C5A0; /* Beige */
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        h1 {
+            font-size: 60px;
+            font-weight: 600;
+            margin: 10px 0;
+            color: #F4E1C1; /* Soft Sand */
+            opacity: 0;
+            transform: translate(-20px);
+            animation: fadeInHeader 1.5s ease-out forwards;
+        }
+
+        @keyframes fadeInHeader {
+            from { opacity: 0; transform: translate(-20px); }
+            to { opacity: 1; transform: translate(0); }
+        }
+
+        /* Typing Animation */
+        p {
+            font-size: 22px;
+            font-weight: 300;
+            margin: 20px;
+            display: inline-block;
+            overflow: hidden;
+            white-space: nowrap;
+            width: 0;
+            animation: typing 2.5s steps(40, end) forwards;
+            animation: typing 2.5s steps(40, end) forwards, blink 0.75s step-end infinite;
+        }
+
+        /* Stop the blinking cursor after typing finishes */
+        p::after {
+            content: "";
+            display: inline-block;
+            width: 0;
+            animation: blink 0.75s step-end 5; /* Cursor blinks 5 times, then stops */
+        }
+
+        p.finished {
+            border-right: none;
+        }
+
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes blink {
+            50% { border-color: transparent; }
+            100% { border-color: transparent; }
+        }
+
+        /* Button Styling */
+        .btn {
+            background-color: #A67B5B; /* Warm Mocha */
+            color: #2E1F27; /* Deep Brown */
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: 600;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            opacity: 0;
+            transform: scale(0.9);
+            animation: fadeIn 1.5s ease-out 2s forwards, shiver 5s infinite;
+            transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+        }
+
+        /* Fade-in effect */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Shiver effect */
+        @keyframes shiver {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-2px); }
+            40% { transform: translateX(2px); }
+            60% { transform: translateX(-1px); }
+            80% { transform: translateX(1px); }
+        }
+
+        /* Fix Hover Effect */
+        .btn:hover {
+            background-color: #D9C5A0; /* Beige */
+            color: #FFFFFF; /* White text for contrast */
+            transform: scale(1.05);
+            animation: fadeIn 0.5s ease-out forwards; /* Ensure shiver stops on hover */
+        }
+
+        /* Add a subtle press effect */
+        .btn:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body>
+    <h1>SIPahi</h1>
+    <p id="catchphrase">Smart SIP Investments, Simplified.</p>
+    <br>
+    <a href="/calculator"><button class="btn">Get Started</button></a>
+</body>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function(){
+            document.getElementById('catchphrase').classList.add('finished');
+        }, 3500);
+    });
+</script>
 </html>
