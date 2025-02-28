@@ -1,17 +1,28 @@
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, render_template, send_from_directory
 from sip_calculator import calculate_sip
+import os
 
-app = Flask(__name__)
+# Print debug info
+print("Template Folder Path:", os.path.abspath("backend/templates"))
+
+app = Flask(__name__, template_folder=os.path.abspath("backend/templates"), 
+            static_folder=os.path.abspath("backend/static"), static_url_path='/static')
 
 @app.route('/')
 def home():
-    return "<h1>SIPahi Flask API is Running!</h1><p>Use the <code>/calculate_sip</code> endpoint to calculate SIP returns.</p>"
+    try:
+        return render_template('landing.html')  # Serve the landing page
+    except Exception as e:
+        return jsonify({"error": f"Template Error: {str(e)}"}), 500
+
+@app.route('/calculator')
+def calculator():
+    return render_template('calculator.html')  # Calculator page
 
 # Debugging route: list all registered routes
 @app.route('/routes', methods=['GET'])
 def list_routes():
-    """List all registered routes(for debugging)."""
-
+    """List all registered routes (for debugging)."""
     output = []
     for rule in app.url_map.iter_rules():
         output.append(str(rule))
@@ -26,25 +37,33 @@ def sip_route():
 
     data = request.get_json()
 
-    # extract values
+    # Extract values
     monthly_investment = data.get('monthly_investment', 0)
     years = data.get('years', 0)
     annual_return = data.get('annual_return', 0)
 
-    # validate input
+    # Validate input
     if not all([monthly_investment, years, annual_return]):
-        return jsonify({"error": "Invalid Input. Please provide 'monthly_investment', 'years', 'annual_return'."}), 400
+        return jsonify({"error": "Invalid Input. Please provide 'monthly_investment', 'years', and 'annual_return'."}), 400
     
-    # calculate SIP
+    # Calculate SIP
     final_amount = calculate_sip(monthly_investment, years, annual_return)  
 
-    return jsonify({"final_amount": final_amount, 
-                    "graph_url": "http://127.0.0.1:5000/sip_graph"})
+    return jsonify({
+        "final_amount": final_amount, 
+        "graph_url": "http://127.0.0.1:5000/sip_graph"
+    })
 
 @app.route('/sip_graph')
 def serve_sip_graph():
     """Returns the generated SIP Growth graph."""
-    return send_file("static/sip_growth.png", mimetype='image/png')
+    
+    graph_path = os.path.join(app.static_folder, "sip_growth.png")
+
+    if not os.path.exists(graph_path):
+        return jsonify({"error": "Graph not found. Please run a SIP calculation first."}), 404
+    
+    return send_from_directory('backend/static', 'sip_growth.png', mimetype='image/png')
 
 if __name__ == '__main__':
     app.run(debug=True)

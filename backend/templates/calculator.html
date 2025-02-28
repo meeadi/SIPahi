@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>SIP Calculator</title>
+        <style>
+            body {
+                background-color: #D1F8EF;
+                text-align: center;
+                font-family: 'Poppins', sans-serif;
+            }
+            .container {
+                margin-top: 50px;
+            }
+            input {
+                padding: 10px;
+                margin: 10px;
+                width: 200px;
+                border-radius: 5px;
+                border: 1px solid #3674B5;
+            }
+            button {
+                background-color: #A1E3F9;
+                color: white;
+                padding: 15px 30px;
+                font-size: 18px;
+                border: none;
+                border-radius: 15px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+            button:hover {
+                background-color: #578FCA;
+                transform: scale(1.05);
+            }
+            .result {
+                margin-top: 20px;
+                font-size: 24px;
+                font-weight: bold;
+                color: #3674B5;
+            }
+        </style>
+    </head>
+
+    <body>
+        <h1>SIP Calculator</h1>
+        <div class="container">
+            <input type="number" id="sip_amount" placeholder="Monthly Investment">
+            <input type="number" id="years" placeholder="Duration (Years)">
+            <input type="number" id="return_rate" placeholder="Expected Return Rate">
+            <button onclick="calculateSIP()">Calculate</button>
+        </div>
+        <div class="result" id="result"></div>
+        <img id="graph" src="" width="500px" style="display: none;">
+
+        <script>
+            function calculateSIP() {
+                let sip_amount = document.getElementById('sip_amount').value;
+                let years = document.getElementById('years').value;
+                let return_rate = document.getElementById('return_rate').value;
+
+                fetch('/calculate_sip', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        monthly_investment: parseFloat(sip_amount),
+                        years: parseFloat(years),
+                        annual_return: parseFloat(return_rate)
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('result').innerHTML = `Final Amount: ₹${data.final_amount}`;
+
+                    let graphElement = document.getElementById("graph");
+                    graphElement.src = data.graph_url;  // Set the graph image
+                    graphElement.style.display = "block";  // Show the graph
+                })
+                .catch(error => console.error('Error:', error));
+            }
+        </script>
+    </body>
+</html>
