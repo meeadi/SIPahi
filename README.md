@@ -3,7 +3,7 @@ Smart SIP Investments and Returns Calculator
 
 About the Project
 
--SIPahi is a web-based financial tool designed to help users calculate and analyze Systematic Investment Plan (SIP) returns with advanced insights. It provides real-time graphical breakdowns, comparative SIP strategies, and risk assessment to help users make smart investment decisions. 
+SIPahi is a web-based financial tool designed to help users calculate and analyze Systematic Investment Plan (SIP) returns with advanced insights. It provides real-time graphical breakdowns, comparative SIP strategies, and risk assessment to help users make smart investment decisions. 
 
 # Features (v1.0)
 
