@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
 from sip_calculator import calculate_sip
 
 app = Flask(__name__)
@@ -38,7 +38,13 @@ def sip_route():
     # calculate SIP
     final_amount = calculate_sip(monthly_investment, years, annual_return)  
 
-    return jsonify({"final_amount": final_amount})
+    return jsonify({"final_amount": final_amount, 
+                    "graph_url": "http://127.0.0.1:5000/sip_graph"})
+
+@app.route('/sip_graph')
+def serve_sip_graph():
+    """Returns the generated SIP Growth graph."""
+    return send_file("static/sip_growth.png", mimetype='image/png')
 
 if __name__ == '__main__':
     app.run(debug=True)
