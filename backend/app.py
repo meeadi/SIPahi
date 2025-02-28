@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template, send_from_directory
+from flask import Flask, request, jsonify, render_template, send_from_directory, send_file
 from sip_calculator import calculate_sip
 import os
 
@@ -32,7 +32,7 @@ def list_routes():
 def sip_route():
     """
     API route to calculate SIP returns.
-    Expects JSON input with 'monthly_investment', 'years', 'annual_return'.
+    Expects JSON input with 'monthly_investment', 'years', 'annual_return', 'annual_increase.
     """
 
     data = request.get_json()
@@ -41,13 +41,14 @@ def sip_route():
     monthly_investment = data.get('monthly_investment', 0)
     years = data.get('years', 0)
     annual_return = data.get('annual_return', 0)
+    annual_increase = data.get('annual_increase', 0)
 
     # Validate input
     if not all([monthly_investment, years, annual_return]):
         return jsonify({"error": "Invalid Input. Please provide 'monthly_investment', 'years', and 'annual_return'."}), 400
     
     # Calculate SIP
-    final_amount = calculate_sip(monthly_investment, years, annual_return)  
+    final_amount = calculate_sip(monthly_investment, years, annual_return, annual_increase)  
 
     return jsonify({
         "final_amount": final_amount, 
@@ -63,7 +64,7 @@ def serve_sip_graph():
     if not os.path.exists(graph_path):
         return jsonify({"error": "Graph not found. Please run a SIP calculation first."}), 404
     
-    return send_from_directory('backend/static', 'sip_growth.png', mimetype='image/png')
+    return send_file(graph_path, mimetype='image/png')
 
 if __name__ == '__main__':
     app.run(debug=True)

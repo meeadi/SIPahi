@@ -49,6 +49,7 @@
             <input type="number" id="sip_amount" placeholder="Monthly Investment">
             <input type="number" id="years" placeholder="Duration (Years)">
             <input type="number" id="return_rate" placeholder="Expected Return Rate">
+            <input type="number" id="increase_rate" placeholder="Annual Increase Rate">
             <button onclick="calculateSIP()">Calculate</button>
         </div>
         <div class="result" id="result"></div>
@@ -59,6 +60,7 @@
                 let sip_amount = document.getElementById('sip_amount').value;
                 let years = document.getElementById('years').value;
                 let return_rate = document.getElementById('return_rate').value;
+                let increase_rate = document.getElementById('increase_rate').value;
 
                 fetch('/calculate_sip', {
                     method: 'POST',
@@ -68,7 +70,8 @@
                     body: JSON.stringify({
                         monthly_investment: parseFloat(sip_amount),
                         years: parseFloat(years),
-                        annual_return: parseFloat(return_rate)
+                        annual_return: parseFloat(return_rate),
+                        annual_increase: parseFloat(increase_rate)
                     })
                 })
                 .then(response => response.json())
@@ -76,8 +79,10 @@
                     document.getElementById('result').innerHTML = `Final Amount: ₹${data.final_amount}`;
 
                     let graphElement = document.getElementById("graph");
-                    graphElement.src = data.graph_url;  // Set the graph image
-                    graphElement.style.display = "block";  // Show the graph
+                    if (data.graph_url) {
+                        graphElement.src = data.graph_url + "?timestamp=" + new Date().getTime();  // Force reload
+                        graphElement.style.display = "block";  // Show the graph
+                    }
                 })
                 .catch(error => console.error('Error:', error));
             }
