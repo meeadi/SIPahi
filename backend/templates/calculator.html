@@ -4,47 +4,106 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>SIP Calculator</title>
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
         <style>
+            @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
             body {
-                background-color: #D1F8EF;
+                background-color: #2E1F27; /* Deep Brown */
                 text-align: center;
                 font-family: 'Poppins', sans-serif;
+                color: #D9C5A0; /* Beige */
+                margin: 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                height: 100vh;
             }
+
+            h1 {
+                font-size: 50px;
+                font-weight: 600;
+                color: #F4E1C1; /* Soft Sand */
+                opacity: 0;
+                animation: fadeIn 1.5s ease-out forwards;
+            }
+
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(-20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+
             .container {
-                margin-top: 50px;
+                background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent box */
+                padding: 30px;
+                border-radius: 15px;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+                width: 90%;
+                max-width: 400px;
             }
+
             input {
-                padding: 10px;
+                padding: 12px;
                 margin: 10px;
-                width: 200px;
-                border-radius: 5px;
-                border: 1px solid #3674B5;
+                width: 90%;
+                border-radius: 8px;
+                border: 1px solid #A67B5B;
+                background: rgba(255, 255, 255, 0.2);
+                color: #FFF;
+                font-size: 16px;
+                outline: none;
+                transition: all 0.3s ease-in-out;
             }
+
+            input:focus {
+                background: rgba(255, 255, 255, 0.4);
+            }
+
             button {
-                background-color: #A1E3F9;
-                color: white;
+                background-color: #A67B5B; /* Warm Mocha */
+                color: #2E1F27;
                 padding: 15px 30px;
                 font-size: 18px;
+                font-weight: 600;
                 border: none;
-                border-radius: 15px;
+                border-radius: 20px;
                 cursor: pointer;
-                transition: all 0.3s ease;
+                transition: all 0.3s ease-in-out;
+                margin-top: 15px;
             }
+
             button:hover {
-                background-color: #578FCA;
+                background-color: #D9C5A0; /* Beige */
+                color: #2E1F27;
                 transform: scale(1.05);
             }
+
             .result {
                 margin-top: 20px;
                 font-size: 24px;
                 font-weight: bold;
-                color: #3674B5;
+                color: #F4E1C1;
+            }
+
+            .graph-container {
+                margin-top: 20px;
+                width: 90%;
+                max-width: 600px;
+            }
+
+            /* Change the graph container to a div for Plotly */
+            #graph {
+                width: 100%;
+                height: 400px;
+                display: none;
             }
         </style>
     </head>
 
     <body>
         <h1>SIP Calculator</h1>
+
         <div class="container">
             <input type="number" id="sip_amount" placeholder="Monthly Investment" oninput="clearResult()">
             <input type="number" id="years" placeholder="Duration (Years)" oninput="clearResult()">
@@ -52,14 +111,42 @@
             <input type="number" id="increase_rate" placeholder="Annual Increase Rate" oninput="clearResult()">
             <button onclick="calculateSIP()">Calculate</button>
         </div>
+
         <div class="result" id="result"></div>
-        <img id="graph" src="" width="500px" style="display: none;">
+
+        <div class="graph-container">
+            <!-- Use a div instead of an img -->
+            <div id="graph"></div>
+        </div>
+
+        <div class="market-data">
+            <h2>Live Market Trends</h2>
+            <p><b>Date: </b><span id="market-date">Loading...</span></p>
+            <p><b>Open: </b>Rs. <span id="market-open">Loading...</span></p>
+            <p><b>High: </b>Rs. <span id="market-high">Loading...</span></p>
+            <p><b>Low: </b>Rs. <span id="market-low">Loading...</span></p>
+            <p><b>Close: </b>Rs. <span id="market-close">Loading...</span></p>
+        </div>
 
         <script>
-            function clearResult() {
-                document.getElementById('result').innerHTML = "";
-                document.getElementById('graph').style.display = "none";
+            function fetchMarketData() {
+                fetch('/market_data')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        document.getElementById('market-date').innerText = "Unavailable";
+                        return;
+                    }
+                    document.getElementById('market-date').innerText = data.date;
+                    document.getElementById('market-open').innerText = data.open;
+                    document.getElementById('market-high').innerText = data.high;
+                    document.getElementById('market-low').innerText = data.low;
+                    document.getElementById('market-close').innerText = data.close;
+                })
+                .catch(error => console.error("Error Fetching Market Data:", error));
             }
+
+            window.onload = fetchMarketData;
 
             function calculateSIP() {
                 let sip_amount = document.getElementById('sip_amount').value;
@@ -67,16 +154,16 @@
                 let return_rate = document.getElementById('return_rate').value;
                 let increase_rate = document.getElementById('increase_rate').value;
 
-                // Clear previous result & graph before fetching new data
+                // Clear previous result
                 document.getElementById('result').innerHTML = "Calculating...";
+                // Clear previous graph (empty the div and hide it)
                 let graphElement = document.getElementById("graph");
-                graphElement.style.display = "none"; // Hide graph until new one loads
+                graphElement.innerHTML = "";
+                graphElement.style.display = "none";
 
                 fetch('/calculate_sip', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         monthly_investment: parseFloat(sip_amount),
                         years: parseFloat(years),
@@ -86,16 +173,49 @@
                 })
                 .then(response => response.json())
                 .then(data => {
+                    if (data.error) {
+                        document.getElementById('result').innerHTML = `Error: ${data.error}`;
+                        return;
+                    }
                     document.getElementById('result').innerHTML = `Final Amount: ₹${data.final_amount}`;
+                    console.log("Graph Data Received:", data);
 
-                    // Reload the graph with a unique timestamp to force refresh
-                    graphElement.src = data.graph_url + "?timestamp=" + new Date().getTime();  // Force reload
-                    graphElement.style.display = "block";  // Show the graph
+                    // Validate received data
+                    if (!data.years || !data.values || data.years.length === 0 || data.values.length === 0) {
+                        document.getElementById('result').innerHTML = "Error: No data available for graph.";
+                        return;
+                    }
+
+                    // Render the graph using Plotly
+                    let trace = {
+                        x: data.years,
+                        y: data.values,
+                        type: 'scatter',
+                        mode: 'lines+markers',
+                        marker: { color: '#A67B5B', size: 6 }
+                    };
+
+                    let layout = {
+                        title: "SIP Growth Over Time",
+                        xaxis: { title: "Years" },
+                        yaxis: { title: "Total Value (₹)" },
+                        paper_bgcolor: "#2E1F27",
+                        plot_bgcolor: "#2E1F27",
+                        font: { color: "#F4E1C1" }
+                    };
+
+                    Plotly.newPlot('graph', [trace], layout);
+                    graphElement.style.display = "block"; // Show the graph
                 })
-                .catch((error) => {
+                .catch(error => {
                     console.error('Error:', error);
-                    document.getElementById('result').innerHTML = "Error occurred. Please try again.";
+                    document.getElementById('result').innerHTML = "Error calculating SIP. Please try again.";
                 });
+            }
+
+            function clearResult() {
+                document.getElementById('result').innerHTML = "";
+                document.getElementById('graph').style.display = "none";
             }
         </script>
     </body>

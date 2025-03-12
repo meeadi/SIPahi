@@ -1,8 +1,9 @@
-from flask import Flask, request, jsonify, render_template, send_from_directory, send_file
+import yfinance as yf
+from flask import Flask, request, jsonify, render_template
 from sip_calculator import calculate_sip
 import os
 
-# Print debug info
+# Debug info
 print("Template Folder Path:", os.path.abspath("backend/templates"))
 
 app = Flask(__name__, template_folder=os.path.abspath("backend/templates"), 
@@ -10,19 +11,21 @@ app = Flask(__name__, template_folder=os.path.abspath("backend/templates"),
 
 @app.route('/')
 def home():
+    """ Serve the landing page """
     try:
-        return render_template('landing.html')  # Serve the landing page
+        return render_template('landing.html')
     except Exception as e:
         return jsonify({"error": f"Template Error: {str(e)}"}), 500
 
 @app.route('/calculator')
 def calculator():
-    return render_template('calculator.html')  # Calculator page
+    """ Serve the calculator page """
+    return render_template('calculator.html')
 
 # Debugging route: list all registered routes
 @app.route('/routes', methods=['GET'])
 def list_routes():
-    """List all registered routes (for debugging)."""
+    """ List all registered routes (for debugging). """
     output = []
     for rule in app.url_map.iter_rules():
         output.append(str(rule))
@@ -32,7 +35,7 @@ def list_routes():
 def sip_route():
     """
     API route to calculate SIP returns.
-    Expects JSON input with 'monthly_investment', 'years', 'annual_return', 'annual_increase.
+    Expects JSON input with 'monthly_investment', 'years', 'annual_return', 'annual_increase'.
     """
 
     data = request.get_json()
@@ -47,24 +50,60 @@ def sip_route():
     if not all([monthly_investment, years, annual_return]):
         return jsonify({"error": "Invalid Input. Please provide 'monthly_investment', 'years', and 'annual_return'."}), 400
     
-    # Calculate SIP
-    final_amount = calculate_sip(monthly_investment, years, annual_return, annual_increase)  
+    # Calculate SIP and get data points
+    result = calculate_sip(monthly_investment, years, annual_return, annual_increase)
 
-    return jsonify({
-        "final_amount": final_amount, 
-        "graph_url": "http://127.0.0.1:5000/sip_graph"
-    })
+    return jsonify(result)
 
-@app.route('/sip_graph')
-def serve_sip_graph():
-    """Returns the generated SIP Growth graph."""
+@app.route('/market_trends')
+def market_trends():
+    """ Serve the market trends page """
+    return render_template('market_trends.html')
+
+@app.route('/market_trend_graph')
+def get_market_trend_graph():
+    """Fetch live market data for NIFTY 50 or other indices from last 30 days"""
+    ticker = "^NSEI" # nifty 50 index
+
+    try:
+        stock = yf.Ticker(ticker)
+        hist = stock.history(period="1mo") # data for last 30 days
+ 
+        if hist.empty:
+            return jsonify({"error": "Market Data Unavailable."}), 500
+        
+        dates = hist.index.strftime("%Y-%m-%d").tolist()
+        prices = hist["Close"].round(2).tolist()
+
+        return jsonify({"dates": dates, "prices": prices})
     
-    graph_path = os.path.join(app.static_folder, "sip_growth.png")
-
-    if not os.path.exists(graph_path):
-        return jsonify({"error": "Graph not found. Please run a SIP calculation first."}), 404
+    except Exception as e:
+        print(f"Error fetching market data: {str(e)}")  # Debugging print statement
+        return jsonify({"error": f"Failed to fetch market data: {str(e)}"}), 500
     
-    return send_file(graph_path, mimetype='image/png')
+@app.route('/market_data')
+def get_market_data():
+    """ Fetch live market data for Nifty 50 (or other indices) """
+    ticker = "^NSEI"  # Nifty 50 index
+    
+    try:
+        stock = yf.Ticker(ticker)
+        hist = stock.history(period="1d")
+
+        if hist.empty:
+            return jsonify({"error": "Market data not available"}), 500
+
+        latest_data = hist.iloc[-1]  # Get the latest available row
+        return jsonify({
+            "date": latest_data.name.strftime('%Y-%m-%d'),
+            "open": round(latest_data["Open"], 2),
+            "high": round(latest_data["High"], 2),
+            "low": round(latest_data["Low"], 2),
+            "close": round(latest_data["Close"], 2)
+        })
+    except Exception as e:
+        print(f"Error fetching live market data: {str(e)}")  # Debugging print statement
+        return jsonify({"error": f"Failed to fetch live market data: {str(e)}"}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)

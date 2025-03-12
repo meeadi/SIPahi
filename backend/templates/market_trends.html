@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Market Trends</title>
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+            body {
+                background-color: #2E1F27; /* Deep Brown */
+                text-align: center;
+                font-family: 'Poppins', sans-serif;
+                color: #D9C5A0; /* Beige */
+                margin: 0;
+                padding-top: 70px;
+            }
+
+            nav {
+                background-color: rgba(31, 22, 27, 0.9);
+                padding: 15px;
+                text-align: center;
+                position: fixed;
+                top: 0;
+                width: 100%;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            }
+
+            nav a {
+                color: #F4E1C1;
+                text-decoration: none;
+                margin: 0 15px;
+                font-size: 18px;
+                font-weight: 600;
+                transition: color 0.3s;
+            }
+
+            nav a:hover {
+                color: #A67B5B;
+            }
+
+            .container {
+                background-color: rgba(255, 255, 255, 0.1);
+                padding: 30px;
+                border-radius: 15px;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+                width: 90%;
+                max-width: 600px;
+                margin: auto;
+                margin-top: 20px;
+            }
+
+            #market-graph {
+                width: 100%;
+                height: 400px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/calculator">SIP Calculator</a>
+            <a href="/market_trends">Market Trends</a>
+        </nav>
+
+        <h1>Market Trends</h1>
+
+        <div class="container">
+            <h2>Live Market Data</h2>
+            <p><b>Date: </b><span id="market-date">Loading...</span></p>
+            <p><b>Open: </b>Rs. <span id="market-open">Loading...</span></p>
+            <p><b>High: </b>Rs. <span id="market-high">Loading...</span></p>
+            <p><b>Low: </b>Rs. <span id="market-low">Loading...</span></p>
+            <p><b>Close: </b>Rs. <span id="market-close">Loading...</span></p>
+        </div>
+
+        <div class="container">
+            <h2>Market Performance (Last 30 Days)</h2>
+            <div id="market-graph"></div>
+        </div>
+
+        <script>
+            function fetchMarketData() {
+                fetch('/market_data')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        document.getElementById('market-data').innerText = "Unavailable";
+                        return;
+                    }
+                    document.getElementById('market-date').textContent = data.date;
+                    document.getElementById('market-open').textContent = data.open;
+                    document.getElementById('market-high').textContent = data.high;
+                    document.getElementById('market-low').textContent = data.low;
+                    document.getElementById('market-close').textContent = data.close;
+                })
+                .catch(error => console.error("Error Fetching Market Data:", error));
+            }
+
+            function fetchMarketGraph() {
+                fetch('/market_trend_graph')
+                .then(response => response.json())
+                .then(data => {
+                    let trace = {
+                        x: data.dates,
+                        y: data.prices,
+                        type: 'scatter',
+                        mode: 'lines+markers',
+                        marker: {color: '#A67B5B', size:6}
+                    };
+
+                    let layout = {
+                        title: "Market Performance over last 30 Days.",
+                        xaxis: {title: "Date"},
+                        yaxis: {title: "Price (INR)"},
+                        plot_bgcolor: '#2E1F27',
+                        paper_bgcolor: '#2E1F27',
+                        font: {color: '#FAE1C1'}
+                    };
+
+                    Plotly.newPlot('market-graph', [trace], layout);
+                })
+
+                .catch(error => console.error("Error Fetching Market Graph:", error));
+            }
+
+            window.onload = function() {
+                fetchMarketData();
+                fetchMarketGraph();
+            };
+        </script>
+    </body>
+</html>

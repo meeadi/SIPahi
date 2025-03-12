@@ -14,15 +14,13 @@ def calculate_sip(monthly_investment, years, annual_return, annual_increase=0):
     :param years: Duration of investment in years
     :param annual_return: Expected annual return on investment (in %)
     :param annual_increase: Annual increase in SIP amount (in %)
-    :return: Final corpus (Total value of investment)
+    :return: Dictionary containing final amount and graph URL
     """
 
     # Convert annual return percentage to decimal
     r = annual_return / 100
     n = 12
     t = years
-
-    # SIP formula
     total_months = t * 12
     monthly_rate = r / n
     total_value = 0
@@ -36,7 +34,7 @@ def calculate_sip(monthly_investment, years, annual_return, annual_increase=0):
         if month % 12 == 0: # every 12 months, increase sip
             current_sip += current_sip * (annual_increase / 100)
             investment_timeline.append(month / 12) # convert months to years
-            value_timeline.append(total_value)
+            value_timeline.append(round(total_value, 2))
 
     # Ensure the 'static' directory exists
     static_folder = "backend/static"
@@ -61,7 +59,11 @@ def calculate_sip(monthly_investment, years, annual_return, annual_increase=0):
     plt.savefig(graph_path)  
     plt.close()
 
-    return round(total_value, 2)
+    return {
+        "final_amount": round(total_value, 2),
+        "years": investment_timeline,
+        "values": value_timeline,
+    }
 
 # Testing the function
 if __name__ == "__main__":
