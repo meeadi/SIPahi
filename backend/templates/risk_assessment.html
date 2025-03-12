@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Risk Assessment</title>
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+            body {
+                background-color: #2E1F27; /* Deep Brown */
+                text-align: center;
+                font-family: Poppins, sans-serif;
+                color: #D9C5A0;
+                margin: 0;
+                padding-top: 70px;
+            }
+
+            nav {
+                background-color: rgba(31, 22, 27, 0.9);
+                padding: 15px;
+                text-align: center;
+                position: fixed;
+                top: 0;
+                width: 100%;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            }
+
+            nav a {
+                color: #F4E1C1;
+                text-decoration: none;
+                margin: 0 15px;
+                font-size: 18px;
+                font-weight: 600;
+                transition: color 0.3s;
+            }
+
+            nav a:hover {
+                color: #A67B5B;
+            }
+
+            .container {
+                background-color: rgba(255, 255, 255, 0.1);
+                padding: 30px;
+                border-radius: 15px;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+                width: 90%;
+                max-width: 600px;
+                margin: auto;
+                margin-top: 20px;
+            }
+
+            #risk-graph {
+                width: 100%;
+                height: 400px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/calculator">SIP Calculator</a>
+            <a href="/market_trends">Market Trends</a>
+            <a href="/risk_assessment">Risk Assessment</a>
+        </nav>
+
+        <h1>Risk Assessment</h1>
+
+        <div class="container">
+            <h2>Determine your Investment Risk Level</h2>
+            <input type="number" id="sip_amount" placeholder="Monthly Investment">
+            <input type="number" id="years" placeholder="Duration (Years)">
+            <input type="number" id="return_rate" placeholder="Expected Return Rate">
+            <button onclick="assessRisk()">Check Risk Level</button>
+        </div>
+
+        <div class="container">
+            <h3>Your Risk Level: <span id="risk-category">-</span></h3>
+            <div id="risk-graph"></div>
+        </div>
+
+        <script>
+            function assessRisk() {
+                let sip_amount = document.getElementById('sip_amount').value;
+                let years = document.getElementById('years').value;
+                let return_rate = document.getElementById('return_rate').value;
+
+                fetch('/calculate_sip', {
+                    method: 'POST', 
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        monthly_investment: parseFloat(sip_amount),
+                        years: parseFloat(years),
+                        annual_return: parseFloat(return_rate),
+                        annual_increase: 0
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Received Risk Data:", data);
+
+                    if (data.error) {
+                        document.getElementById('risk-category').innerText = "Error loading risk.";
+                        return;
+                    return;
+
+                    document.getElementById('risk-category').innerText = data.risk_category;
+            }
+
+                    let colors = {
+                        "Conservative": "green",
+                        "Moderate": "yellow", 
+                        "Aggressive": "red"
+                    };
+
+                    let trace = {
+                        x: ["Conservative", "Moderate", "Aggressive"],
+                        y: [
+                            data.risk_category === "Conservative" ? 1 : 0,
+                            data.risk_category === "Moderate" ? 1 : 0,
+                            data.risk_category === "Aggressive" ? 1 : 0
+                        ],
+                        type: "bar", 
+                        marker: {color: colors[data.risk_category]}
+                    };
+
+                    let layout = {
+                        title: "Risk Level Distribution", 
+                        xaxis: {title: "Risk Categories"},
+                        yaxis: {title: "Your Risk Level"},
+                        paper_bgcolor: "#2E1F27",
+                        plot_bgcolor: "#2E1F27",
+                        font: {color: "#F4E1C1"}
+                    };
+
+                    Plotly.newPlot('risk-graph', [trace], layout);
+                })
+
+                .catch(error => {
+                    console.error("Error fetching Risk Data:", error);
+                    document.getElementById('risk-category').innerText = "Error calculating risk.";
+                });
+            }
+        </script>
+    </body>
+</html>

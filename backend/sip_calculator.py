@@ -5,6 +5,15 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 
+def assess_risk(annual_return):
+    """ Determines the SIP risk level based on expected annual rate"""
+    if annual_return < 10:
+        return "Conservative"
+    elif 10 <= annual_return < 15:
+        return "Moderate"
+    else:
+        return "Aggressive"
+
 def calculate_sip(monthly_investment, years, annual_return, annual_increase=0):
     """
     Calculate the final amount for a fixed SIP Investment.
@@ -36,6 +45,10 @@ def calculate_sip(monthly_investment, years, annual_return, annual_increase=0):
             investment_timeline.append(month / 12) # convert months to years
             value_timeline.append(round(total_value, 2))
 
+    # Assess risk level 
+
+    risk_category = assess_risk(annual_return)
+
     # Ensure the 'static' directory exists
     static_folder = "backend/static"
     if not os.path.exists(static_folder):
@@ -63,6 +76,7 @@ def calculate_sip(monthly_investment, years, annual_return, annual_increase=0):
         "final_amount": round(total_value, 2),
         "years": investment_timeline,
         "values": value_timeline,
+        "risk_category": risk_category 
     }
 
 # Testing the function

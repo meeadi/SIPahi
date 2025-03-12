@@ -21,6 +21,29 @@
                 height: 100vh;
             }
 
+            nav {
+                background-color: rgba(31, 22, 27, 0.9);
+                padding: 15px;
+                text-align: center;
+                position: fixed;
+                top: 0;
+                width: 100%;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            }
+
+            nav a {
+                color: #F4E1C1;
+                text-decoration: none;
+                margin: 0 15px;
+                font-size: 18px;
+                font-weight: 600;
+                transition: color 0.3s;
+            }
+
+            nav a:hover {
+                color: #A67B5B;
+            }
+
             h1 {
                 font-size: 50px;
                 font-weight: 600;
@@ -102,6 +125,13 @@
     </head>
 
     <body>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/calculator">SIP Calculator</a>
+            <a href="/market_trends">Market Trends</a>
+            <a href="/risk_assessment">Risk Assessment</a>
+        </nav>
+
         <h1>SIP Calculator</h1>
 
         <div class="container">

@@ -104,6 +104,11 @@ def get_market_data():
     except Exception as e:
         print(f"Error fetching live market data: {str(e)}")  # Debugging print statement
         return jsonify({"error": f"Failed to fetch live market data: {str(e)}"}), 500
+    
+@app.route('/risk_assessment')
+def risk_assessment():
+    """ Serve the risk assessment page """
+    return render_template('risk_assessment.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
