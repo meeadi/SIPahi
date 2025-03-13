@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SIPahi</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
 
         body {
             background-color: #2E1F27; /* Deep Brown */
             text-align: center;
-            font-family: 'Poppins', sans-serif;
-            color: #D9C5A0; /* Beige */
+            font-family: 'Inter', sans-serif;
+            color: #EAEAEA; /* Softer White */
             margin: 0;
             display: flex;
             flex-direction: column;
@@ -24,85 +24,157 @@
             transition: background 0.5s ease-in-out;
         }
 
+        /* Light Mode */
         body.light-mode {
             background: url('/static/LightMode.png');
             background-size: cover;
             color: black;
         }
 
+        /* Navbar */
         nav {
-            background-color: rgba(31, 22, 27, 0.7);
-            padding: 15px;
+            background-color: rgba(31, 22, 27, 0.5); /* Transparent dark for better contrast */
+            padding: 12px 20px;
             text-align: center;
             position: fixed;
             top: 0px;
             width: 100%;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            border-radius: 0 0 15px 15px;
+        }
+
+        body.light-mode nav {
+            background-color: rgba(255, 255, 255, 0.4) !important;
         }
 
         nav a {
-            color: #F4E1C1;
+            color: #EAEAEA;
             text-decoration: none;
-            margin: 0 15px;
+            margin: 0 20px;
             font-size: 18px;
             font-weight: 600;
-            transition: color 0.3s;
+            transition: color 0.3s, transform 0.2s;
         }
 
         nav a:hover {
-            color: #A67B5B;
+            color: #FACC15; /* Vibrant yellow */
+            transform: translateY(-2px);
         }
 
-        .navbar {
-            background-color: rgba(0, 0, 0, 0.6); /* Transparent dark for better contrast */
-            padding: 10px 20px;
-            border-radius: 8px;
+        body.light-mode nav a {
+            color: black !important;
         }
 
-        /* Light Mode Navbar */
-        body.light-mode .navbar {
-            background-color: rgba(255, 255, 255, 0.8);
-            color: black;
+        body.light-mode nav a:hover {
+            color: #3B82F6 !important;
         }
 
-        h1 {
-            font-size: 60px;
-            font-weight: 600;
-            margin: 10px 0;
-            color: #F4E1C1; /* Soft Sand */
+        /* Theme Switch Position */
+        .theme-switch-container {
+            position: absolute;
+            top: 70px;
+            right: 20px;
+        }
+
+        /* Theme Switch */
+        .theme-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+
+        /* Hide Default CheckBox */
+        .theme-switch input {
             opacity: 0;
-            transform: translate(-20px);
+            width: 0;
+            height: 0;
+        }
+
+        /* Slider */ 
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #FACC15;
+            transition: 0.4s;
+            border-radius: 34px;
+        }
+
+        /* Rounded Slider */
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: #2E1F27;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        body.light-mode .slider {
+            background-color: #3B82F6 !important;
+        }
+
+        body.light-mode .slider:before {
+            transform: translateX(24px);
+            background-color: white !important;
+        }
+
+        /* Move the slider for Dark Mode */
+        input:checked + .slider {
+            background-color: #2E1F27;
+        }
+
+        /* Move the Toggle */
+        input:checked + .slider:before {
+            transform: translateX(24px);
+            background-color: #FACC15;
+        }
+
+        /* Header: Dark Mode */
+        h1 {
+            font-size: 70px;
+            font-weight: 700;
+            margin: 10px 0;
+            color: #FACC15;
+            opacity: 0;
             animation: fadeInHeader 1.5s ease-out forwards;
         }
 
+        body.light-mode h1 {
+            color: #3B82F6 !important;
+        }
+
         @keyframes fadeInHeader {
-            from { opacity: 0; transform: translate(-20px); }
-            to { opacity: 1; transform: translate(0); }
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* Typing Animation */
         p {
-            font-size: 22px;
-            font-weight: 300;
+            font-size: 24px;
+            font-weight: 400;
             margin: 20px;
             display: inline-block;
             overflow: hidden;
             white-space: nowrap;
             width: 0;
             animation: typing 2.5s steps(40, end) forwards;
-            animation: typing 2.5s steps(40, end) forwards, blink 0.75s step-end infinite;
-        }
+        }       
 
-        /* Stop the blinking cursor after typing finishes */
+        /* Stopping the blinking cursor after typing finishes */
         p::after {
             content: "";
             display: inline-block;
             width: 0;
             animation: blink 0.75s step-end 5; /* Cursor blinks 5 times, then stops */
-        }
-
-        p.finished {
-            border-right: none;
         }
 
         @keyframes typing {
@@ -117,47 +189,49 @@
 
         /* Button Styling */
         .btn {
-            background-color: #A67B5B; /* Warm Mocha */
-            color: #2E1F27; /* Deep Brown */
-            padding: 15px 30px;
-            font-size: 18px;
+            background-color: #FACC15; /* Vibrant Yellow */
+            color: #2E1F27;
+            padding: 18px 40px;
+            font-size: 20px;
             font-weight: 600;
             border: none;
-            border-radius: 20px;
+            border-radius: 25px;
             cursor: pointer;
             opacity: 0;
-            transform: scale(0.9);
-            animation: fadeIn 1.5s ease-out 2s forwards, shiver 5s infinite;
+            animation: fadeIn 1.5s ease-out 2s forwards, pulseGlow 2.5s infinite;
             transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+            box-shadow: 0px 4px 15px rgba(255, 204, 0, 0.3);
+        }
+
+        body.light-mode .btn {
+            background-color: #3B82F6 !important;
+            color: white !important;
         }
 
         /* Fade-in effect */
         @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.9); }
+            from { opacity: 0; transform: scale(0.95); }
             to { opacity: 1; transform: scale(1); }
         }
 
-        /* Shiver effect */
-        @keyframes shiver {
-            0%, 100% { transform: translateX(0); }
-            20% { transform: translateX(-2px); }
-            40% { transform: translateX(2px); }
-            60% { transform: translateX(-1px); }
-            80% { transform: translateX(1px); }
+        /* Soft Glow Effect */
+        @keyframes pulseGlow {
+            0% { transform: scale(1); box-shadow: 0px 4px 15px rgba(255, 204, 0, 0.3); }
+            50% { transform: scale(1.05); box-shadow: 0px 6px 20px rgba(255, 204, 0, 0.5); }
+            100% { transform: scale(1); box-shadow: 0px 4px 15px rgba(255, 204, 0, 0.3); }
         }
 
-        /* Fix Hover Effect */
+        /* Button Hover */
         .btn:hover {
-            background-color: #D9C5A0; /* Beige */
-            color: #FFFFFF; /* White text for contrast */
-            transform: scale(1.05);
-            animation: fadeIn 0.5s ease-out forwards; /* Ensure shiver stops on hover */
+            background-color: #FFD700;
+            transform: scale(1.08);
         }
 
-        /* Add a subtle press effect */
+        /* Button Press */
         .btn:active {
             transform: scale(0.95);
         }
+
     </style>
 </head>
 <body>
@@ -166,10 +240,16 @@
         <a href="/calculator">SIP Calculator</a>
         <a href="/market_trends">Market Trends</a>
         <a href="/risk_assessment">Risk Assessment</a>
-        <button id="theme-toggle">🌙 Switch Mode</button>
     </nav>
 
-    <h1>SIPahi</h1>
+    <div class="theme-switch-container">
+        <label class="theme-switch">
+            <input type="checkbox" id="theme-toggle">
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <h1>sipahi.</h1>
     <p id="catchphrase">Smart SIP Investments, Simplified.</p>
     <br>
     <a href="/calculator"><button class="btn">Get Started</button></a>
@@ -188,22 +268,19 @@
 
         if (savedTheme === "light") {
             body.classList.add("light-mode");
-            themeToggle.textContent = "🌙 Dark Mode";
+            themeToggle.checked = true; // Ensure Toggle Switch is in Proper position
         } else {
-            body.classList.remove("light-mode"); // Ensure dark mode is default
-            themeToggle.textContent = "☀️ Light Mode";
+            themeToggle.checked = false; // Ensure Toggle Switch is in Proper position
         }
 
         // Toggle function
-        themeToggle.addEventListener("click", function () {
-            body.classList.toggle("light-mode");
-
-            if (body.classList.contains("light-mode")) {
+        themeToggle.addEventListener("change", function () {
+            if (themeToggle.checked) { 
+                body.classList.add("light-mode");
                 localStorage.setItem("theme", "light");
-                themeToggle.textContent = "🌙 Dark Mode";
             } else {
+                body.classList.remove("light-mode");
                 localStorage.setItem("theme", "dark");
-                themeToggle.textContent = "☀️ Light Mode";
             }
         });
     });
