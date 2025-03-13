@@ -19,14 +19,24 @@
                 align-items: center;
                 justify-content: center;
                 height: 100vh;
+                background: url('/static/DarkMode.png');
+                background-size: cover;
+                background-position: center;
+                transition: background 0.5s ease-in-out;
+            }
+
+            body.light-mode {
+                background: url('/static/LightMode.png');
+                background-size: cover;
+                color: black;
             }
 
             nav {
-                background-color: rgba(31, 22, 27, 0.9);
+                background-color: rgba(31, 22, 27, 0.7);
                 padding: 15px;
                 text-align: center;
                 position: fixed;
-                top: 0;
+                top: 0px;
                 width: 100%;
                 box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             }
@@ -43,6 +53,19 @@
             nav a:hover {
                 color: #A67B5B;
             }
+
+            .navbar {
+                background-color: rgba(0, 0, 0, 0.6); /* Transparent dark for better contrast */
+                padding: 10px 20px;
+                border-radius: 8px;
+            }
+
+            /* Light Mode Navbar */
+            body.light-mode .navbar {
+                background-color: rgba(255, 255, 255, 0.8);
+                color: black;
+            }
+
 
             h1 {
                 font-size: 50px;
@@ -84,16 +107,22 @@
             }
 
             button {
-                background-color: #A67B5B; /* Warm Mocha */
-                color: #2E1F27;
+                background-color: rgba(255, 255, 255, 0.2);
+                color: white;
                 padding: 15px 30px;
                 font-size: 18px;
                 font-weight: 600;
-                border: none;
+                border: 1px solid white;
                 border-radius: 20px;
                 cursor: pointer;
                 transition: all 0.3s ease-in-out;
                 margin-top: 15px;
+            }
+
+            body.light-mode button {
+                background-color: rgba(0, 0, 0, 0.2);
+                color: black;
+                border: 1px solid black;
             }
 
             button:hover {
@@ -130,6 +159,7 @@
             <a href="/calculator">SIP Calculator</a>
             <a href="/market_trends">Market Trends</a>
             <a href="/risk_assessment">Risk Assessment</a>
+            <button id="theme-toggle">🌙 Switch Mode</button>
         </nav>
 
         <h1>SIP Calculator</h1>
@@ -247,6 +277,34 @@
                 document.getElementById('result').innerHTML = "";
                 document.getElementById('graph').style.display = "none";
             }
+
+            document.addEventListener("DOMContentLoaded", function () {
+                const themeToggle = document.getElementById("theme-toggle");
+                const body = document.body;
+
+                // Load saved theme preference from local storage
+                const savedTheme = localStorage.getItem("theme");
+
+                if (savedTheme === "light") {
+                    body.classList.add("light-mode");
+                    themeToggle.textContent = "🌙 Dark Mode";
+                } else {
+                    themeToggle.textContent = "☀️ Light Mode";
+                }
+
+                // Toggle function
+                themeToggle.addEventListener("click", function () {
+                    body.classList.toggle("light-mode");
+
+                    if (body.classList.contains("light-mode")) {
+                        localStorage.setItem("theme", "light");
+                        themeToggle.textContent = "🌙 Dark Mode";
+                    } else {
+                        localStorage.setItem("theme", "dark");
+                        themeToggle.textContent = "☀️ Light Mode";
+                    }
+                });
+            });
         </script>
     </body>
 </html>

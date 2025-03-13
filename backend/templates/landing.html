@@ -18,6 +18,16 @@
             align-items: center;
             justify-content: center;
             height: 100vh;
+            background: url('/static/DarkMode.png');
+            background-size: cover;
+            background-position: center;
+            transition: background 0.5s ease-in-out;
+        }
+
+        body.light-mode {
+            background: url('/static/LightMode.png');
+            background-size: cover;
+            color: black;
         }
 
         nav {
@@ -41,6 +51,18 @@
 
         nav a:hover {
             color: #A67B5B;
+        }
+
+        .navbar {
+            background-color: rgba(0, 0, 0, 0.6); /* Transparent dark for better contrast */
+            padding: 10px 20px;
+            border-radius: 8px;
+        }
+
+        /* Light Mode Navbar */
+        body.light-mode .navbar {
+            background-color: rgba(255, 255, 255, 0.8);
+            color: black;
         }
 
         h1 {
@@ -144,6 +166,7 @@
         <a href="/calculator">SIP Calculator</a>
         <a href="/market_trends">Market Trends</a>
         <a href="/risk_assessment">Risk Assessment</a>
+        <button id="theme-toggle">🌙 Switch Mode</button>
     </nav>
 
     <h1>SIPahi</h1>
@@ -152,11 +175,38 @@
     <a href="/calculator"><button class="btn">Get Started</button></a>
 </body>
 
+<script src="static/theme-toggle.js"></script>
+
+
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        setTimeout(function(){
-            document.getElementById('catchphrase').classList.add('finished');
-        }, 3500);
+    document.addEventListener("DOMContentLoaded", function () {
+        const themeToggle = document.getElementById("theme-toggle");
+        const body = document.body;
+
+        // Load saved theme preference from local storage
+        const savedTheme = localStorage.getItem("theme");
+
+        if (savedTheme === "light") {
+            body.classList.add("light-mode");
+            themeToggle.textContent = "🌙 Dark Mode";
+        } else {
+            body.classList.remove("light-mode"); // Ensure dark mode is default
+            themeToggle.textContent = "☀️ Light Mode";
+        }
+
+        // Toggle function
+        themeToggle.addEventListener("click", function () {
+            body.classList.toggle("light-mode");
+
+            if (body.classList.contains("light-mode")) {
+                localStorage.setItem("theme", "light");
+                themeToggle.textContent = "🌙 Dark Mode";
+            } else {
+                localStorage.setItem("theme", "dark");
+                themeToggle.textContent = "☀️ Light Mode";
+            }
+        });
     });
 </script>
+
 </html>

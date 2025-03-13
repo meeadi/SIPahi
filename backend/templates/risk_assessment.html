@@ -12,10 +12,24 @@
             body {
                 background-color: #2E1F27; /* Deep Brown */
                 text-align: center;
-                font-family: Poppins, sans-serif;
-                color: #D9C5A0;
+                font-family: 'Poppins', sans-serif;
+                color: #D9C5A0; /* Beige */
                 margin: 0;
-                padding-top: 70px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                height: 100vh;
+                background: url('/static/DarkMode.png');
+                background-size: cover;
+                background-position: center;
+                transition: background 0.5s ease-in-out;
+            }
+
+            body.light-mode {
+                background: url('/static/LightMode.png');
+                background-size: cover;
+                color: black;
             }
 
             nav {
@@ -41,6 +55,19 @@
                 color: #A67B5B;
             }
 
+            .navbar {
+                background-color: rgba(0, 0, 0, 0.6); /* Transparent dark for better contrast */
+                padding: 10px 20px;
+                border-radius: 8px;
+            }
+
+            /* Light Mode Navbar */
+            body.light-mode .navbar {
+                background-color: rgba(255, 255, 255, 0.8);
+                color: black;
+            }
+
+
             .container {
                 background-color: rgba(255, 255, 255, 0.1);
                 padding: 30px;
@@ -65,6 +92,7 @@
             <a href="/calculator">SIP Calculator</a>
             <a href="/market_trends">Market Trends</a>
             <a href="/risk_assessment">Risk Assessment</a>
+            <button id="theme-toggle">🌙 Switch Mode</button>
         </nav>
 
         <h1>Risk Assessment</h1>
@@ -108,7 +136,7 @@
                     return;
 
                     document.getElementById('risk-category').innerText = data.risk_category;
-            }
+                    }
 
                     let colors = {
                         "Conservative": "green",
@@ -144,6 +172,34 @@
                     document.getElementById('risk-category').innerText = "Error calculating risk.";
                 });
             }
+
+            document.addEventListener("DOMContentLoaded", function () {
+                const themeToggle = document.getElementById("theme-toggle");
+                const body = document.body;
+
+                // Load saved theme preference from local storage
+                const savedTheme = localStorage.getItem("theme");
+
+                if (savedTheme === "light") {
+                    body.classList.add("light-mode");
+                    themeToggle.textContent = "🌙 Dark Mode";
+                } else {
+                    themeToggle.textContent = "☀️ Light Mode";
+                }
+
+                // Toggle function
+                themeToggle.addEventListener("click", function () {
+                    body.classList.toggle("light-mode");
+
+                    if (body.classList.contains("light-mode")) {
+                        localStorage.setItem("theme", "light");
+                        themeToggle.textContent = "🌙 Dark Mode";
+                    } else {
+                        localStorage.setItem("theme", "dark");
+                        themeToggle.textContent = "☀️ Light Mode";
+                    }
+                });
+            });
         </script>
     </body>
 </html>
