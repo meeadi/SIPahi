@@ -1,28 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>SIP Calculator</title>
-        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        <script src="https://cdn.plot.ly/plotly-2.20.0.min.js"></script>
         <style>
-            @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
 
             body {
-                background-color: #2E1F27; /* Deep Brown */
-                text-align: center;
-                font-family: 'Poppins', sans-serif;
-                color: #D9C5A0; /* Beige */
+                background: url('/static/DarkMode.png');
+                background-size: cover;
+                font-family: 'Inter', sans-serif;
+                color: white;
                 margin: 0;
+                padding: 0;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
                 height: 100vh;
-                background: url('/static/DarkMode.png');
-                background-size: cover;
-                background-position: center;
-                transition: background 0.5s ease-in-out;
             }
 
             body.light-mode {
@@ -31,280 +29,324 @@
                 color: black;
             }
 
+            h2 {
+                color: #FACC15 !important;
+            }
+
+            body.light-mode h2 {
+                color: #3B82F6 !important;
+            }
+
             nav {
-                background-color: rgba(31, 22, 27, 0.7);
-                padding: 15px;
+                background-color: rgba(31, 22, 27, 0.5);
+                padding: 12px 20px;
                 text-align: center;
                 position: fixed;
                 top: 0px;
                 width: 100%;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+                backdrop-filter: blur(10px);
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+                border-radius: 0 0 15px 15px;
+            }
+
+            body.light-mode nav {
+                background-color: rgba(255, 255, 255, 0.4) !important;;
             }
 
             nav a {
-                color: #F4E1C1;
+                color: #FACC15;
                 text-decoration: none;
-                margin: 0 15px;
+                margin: 0 20px;
                 font-size: 18px;
                 font-weight: 600;
-                transition: color 0.3s;
+                transition: color 0.3s, transform 0.2s;
             }
 
             nav a:hover {
-                color: #A67B5B;
+                color: white;
+                transform: translateY(-2px);
             }
 
-            .navbar {
-                background-color: rgba(0, 0, 0, 0.6); /* Transparent dark for better contrast */
-                padding: 10px 20px;
-                border-radius: 8px;
+            body.light-mode nav a {
+                color: #3B82F6 !important;
             }
 
-            /* Light Mode Navbar */
-            body.light-mode .navbar {
-                background-color: rgba(255, 255, 255, 0.8);
-                color: black;
+            body.light-mode nav a:hover {
+                color: black !important;
             }
 
-
-            h1 {
-                font-size: 50px;
-                font-weight: 600;
-                color: #F4E1C1; /* Soft Sand */
-                opacity: 0;
-                animation: fadeIn 1.5s ease-out forwards;
-            }
-
-            @keyframes fadeIn {
-                from { opacity: 0; transform: translateY(-20px); }
-                to { opacity: 1; transform: translateY(0); }
-            }
-
-            .container {
-                background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent box */
-                padding: 30px;
-                border-radius: 15px;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            .main-container {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
                 width: 90%;
-                max-width: 400px;
+                max-width: 1200px;
+                height: 85vh;
+                padding-top: 80px;
+            }
+
+            .left-section {
+                width: 50%;
+                text-align: center;
+            }
+
+            .right-section {
+                width: 45%;
+                padding-left: 50px;
+            }
+
+            .left-section, .right-section {
+                background: none;
             }
 
             input {
+                width: 80%;
                 padding: 12px;
                 margin: 10px;
-                width: 90%;
-                border-radius: 8px;
-                border: 1px solid #A67B5B;
+                border-radius: 5px;
+                border: 1px solid #FACC15;
                 background: rgba(255, 255, 255, 0.2);
-                color: #FFF;
+                color: white;
                 font-size: 16px;
-                outline: none;
-                transition: all 0.3s ease-in-out;
             }
 
-            input:focus {
-                background: rgba(255, 255, 255, 0.4);
+            body.light-mode input {
+                color: black !important;
+                background: rgba(255, 255, 255, 0.8) !important;
+                border: 1px solid #3B82F6 !important;
             }
 
             button {
-                background-color: rgba(255, 255, 255, 0.2);
-                color: white;
-                padding: 15px 30px;
+                background-color: #FACC15;
+                color: #2E1F27;
+                padding: 12px 25px;
                 font-size: 18px;
                 font-weight: 600;
-                border: 1px solid white;
+                border: none;
                 border-radius: 20px;
                 cursor: pointer;
-                transition: all 0.3s ease-in-out;
-                margin-top: 15px;
+                transition: all 0.3s;
             }
 
             body.light-mode button {
-                background-color: rgba(0, 0, 0, 0.2);
-                color: black;
-                border: 1px solid black;
+                background-color: #3B82F6 !important;
+                color: white !important;
             }
 
             button:hover {
-                background-color: #D9C5A0; /* Beige */
-                color: #2E1F27;
-                transform: scale(1.05);
+                background-color: #FFD700;
             }
 
-            .result {
-                margin-top: 20px;
-                font-size: 24px;
-                font-weight: bold;
-                color: #F4E1C1;
+            body.light-mode button:hover {
+                background-color: #2563EB !important;
             }
 
-            .graph-container {
-                margin-top: 20px;
-                width: 90%;
-                max-width: 600px;
-            }
-
-            /* Change the graph container to a div for Plotly */
-            #graph {
+            #graph-container {
                 width: 100%;
-                height: 400px;
-                display: none;
+                margin-top: 20px;
             }
+
+            .theme-switch-container {
+                position: absolute;
+                top: 70px;
+                right: 20px;
+            }
+
+            .theme-switch {
+                position: relative;
+                display: inline-block;
+                width: 50px;
+                height: 26px;
+            }
+
+            .theme-switch input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+
+            .slider {
+                position: absolute;
+                cursor: pointer;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: #FACC15;
+                transition: 0.4s;
+                border-radius: 34px;
+            }
+
+            .slider:before {
+                position: absolute;
+                content: "";
+                height: 18px;
+                width: 18px;
+                left: 4px;
+                bottom: 4px;
+                background-color: #2E1F27;
+                transition: 0.4s;
+                border-radius: 50%;
+            }
+
+            /* Light Mode */
+
+            body.light-mode .slider {
+                background-color: #3B82F6 !important;
+            }
+
+            body.light-mode .slider:before {
+                transform: translateX(24px);
+                background-color: white !important;
+            }
+
+            input:checked + .slider {
+                background-color: #2E1F27;
+            }
+
+            input:checked + .slider:before {
+                transform: translateX(24px);
+                background-color: #FACC15;
+            }
+
         </style>
     </head>
 
     <body>
+        
         <nav>
             <a href="/">Home</a>
             <a href="/calculator">SIP Calculator</a>
             <a href="/market_trends">Market Trends</a>
             <a href="/risk_assessment">Risk Assessment</a>
-            <button id="theme-toggle">🌙 Switch Mode</button>
         </nav>
 
-        <h1>SIP Calculator</h1>
-
-        <div class="container">
-            <input type="number" id="sip_amount" placeholder="Monthly Investment" oninput="clearResult()">
-            <input type="number" id="years" placeholder="Duration (Years)" oninput="clearResult()">
-            <input type="number" id="return_rate" placeholder="Expected Return Rate" oninput="clearResult()">
-            <input type="number" id="increase_rate" placeholder="Annual Increase Rate" oninput="clearResult()">
-            <button onclick="calculateSIP()">Calculate</button>
+        <div class="theme-switch-container">
+            <label class="theme-switch">
+                <input type="checkbox" id="theme-toggle">
+                <span class="slider"></span>
+            </label>
         </div>
 
-        <div class="result" id="result"></div>
+        <div class="main-container">
+            <div class="left-section">
+                <h2>SIP Calculator</h2>
+                <input type="number" id="sip_amount" placeholder="Monthly Investment">
+                <input type="number" id="years" placeholder="Duration in Years">
+                <input type="number" id="return_rate" placeholder="Expected Return Rate">
+                <input type="number" id="increase_rate" placeholder="Annual Increase Rate (Optional)">
+                <button onclick="calculateSIP()">Calculate</button>
+                <div class="result" id="result"></div>
+                <div id="graph-container"></div>
+            </div>
 
-        <div class="graph-container">
-            <!-- Use a div instead of an img -->
-            <div id="graph"></div>
-        </div>
+            <div class="right-section">
+                <h2>What are SIPs?</h2>
+                <p>A Systematic Investment Plan (SIP) is a disciplined way to invest a fixed amount in mutual funds at regular intervals. It helps in wealth creation through compounding and rupee cost averaging.</p>
 
-        <div class="market-data">
-            <h2>Live Market Trends</h2>
-            <p><b>Date: </b><span id="market-date">Loading...</span></p>
-            <p><b>Open: </b>Rs. <span id="market-open">Loading...</span></p>
-            <p><b>High: </b>Rs. <span id="market-high">Loading...</span></p>
-            <p><b>Low: </b>Rs. <span id="market-low">Loading...</span></p>
-            <p><b>Close: </b>Rs. <span id="market-close">Loading...</span></p>
+                <h2>Why Invest in SIPs?</h2>
+                <p>Investing through SIPs is beneficial because:</p>
+                <ul>
+                    <li>✅ Invest Small, Grow Big – Start investing with as little as ₹500 per month.</li>
+                    <li>✅ Reduces Market Risk – Avoids the need to time the market.</li>
+                    <li>✅ Compounding Returns – Small, consistent investments grow significantly over time.</li>
+                    <li>✅ Flexibility & Discipline – Investors can start, stop, or modify SIPs anytime.</li>
+                </ul>
+
+                <h2>How Can SIP Calculators Benefit You?</h2>
+                <p>A SIP calculator helps in:</p>
+                <ul>
+                    <li>📊 Estimating Future Wealth – Get an approximate value of your investments over time.</li>
+                    <li>📈 Better Financial Planning – Know how much to invest monthly for your goals.</li>
+                    <li>⚡ Quick & Hassle-Free – No manual calculations; just enter your details and get results instantly.</li>
+                    <li>🔍 Comparing Investment Scenarios – Understand how different SIP amounts and durations impact your returns.</li>
+                </ul>
+            </div>
         </div>
 
         <script>
-            function fetchMarketData() {
-                fetch('/market_data')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.error) {
-                        document.getElementById('market-date').innerText = "Unavailable";
-                        return;
+            document.addEventListener('DOMContentLoaded', function() {
+                const themeToggle = document.getElementById('theme-toggle');
+                const body = document.body;
+        
+                const savedTheme = localStorage.getItem('theme');
+        
+                if (savedTheme === 'light') {
+                    body.classList.add('light-mode');
+                    themeToggle.checked = true;
+                } else  {
+                    themeToggle.checked = false;
+                }
+        
+                themeToggle.addEventListener("change", function() {
+                    if (themeToggle.checked) {
+                        body.classList.add('light-mode');
+                        localStorage.setItem('theme', 'light');
+                    } else {
+                        body.classList.remove('light-mode');
+                        localStorage.setItem('theme', 'dark');
                     }
-                    document.getElementById('market-date').innerText = data.date;
-                    document.getElementById('market-open').innerText = data.open;
-                    document.getElementById('market-high').innerText = data.high;
-                    document.getElementById('market-low').innerText = data.low;
-                    document.getElementById('market-close').innerText = data.close;
-                })
-                .catch(error => console.error("Error Fetching Market Data:", error));
-            }
-
-            window.onload = fetchMarketData;
-
+                });
+            });
+        
             function calculateSIP() {
-                let sip_amount = document.getElementById('sip_amount').value;
-                let years = document.getElementById('years').value;
-                let return_rate = document.getElementById('return_rate').value;
-                let increase_rate = document.getElementById('increase_rate').value;
-
-                // Clear previous result
-                document.getElementById('result').innerHTML = "Calculating...";
-                // Clear previous graph (empty the div and hide it)
-                let graphElement = document.getElementById("graph");
-                graphElement.innerHTML = "";
-                graphElement.style.display = "none";
-
+                let sip_amount = parseFloat(document.getElementById('sip_amount').value);
+                let years = parseFloat(document.getElementById('years').value);
+                let return_rate = parseFloat(document.getElementById('return_rate').value);
+                let increase_rate = parseFloat(document.getElementById('increase_rate').value) || 0; // Default to 0 if empty
+        
+                // Validate inputs
+                if (isNaN(sip_amount) || isNaN(years) || isNaN(return_rate)) {
+                    document.getElementById('result').innerHTML = "⚠️ Please enter valid numbers.";
+                    return;
+                }
+        
                 fetch('/calculate_sip', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        monthly_investment: parseFloat(sip_amount),
-                        years: parseFloat(years),
-                        annual_return: parseFloat(return_rate),
-                        annual_increase: parseFloat(increase_rate)
+                        monthly_investment: sip_amount,
+                        years: years,
+                        annual_return: return_rate,
+                        annual_increase: increase_rate
                     })
                 })
                 .then(response => response.json())
                 .then(data => {
-                    if (data.error) {
-                        document.getElementById('result').innerHTML = `Error: ${data.error}`;
-                        return;
-                    }
-                    document.getElementById('result').innerHTML = `Final Amount: ₹${data.final_amount}`;
-                    console.log("Graph Data Received:", data);
+                    document.getElementById('result').innerHTML = `<h3>Expected Returns: ₹${data.final_amount.toLocaleString()}</h3>`;
+                    
+                    let body = document.body;
+                    let graphColor = body.classList.contains('light-mode') ? '#3B82F6' : '#FACC15';
 
-                    // Validate received data
-                    if (!data.years || !data.values || data.years.length === 0 || data.values.length === 0) {
-                        document.getElementById('result').innerHTML = "Error: No data available for graph.";
-                        return;
-                    }
-
-                    // Render the graph using Plotly
                     let trace = {
-                        x: data.years,
+                        x: data.years, 
                         y: data.values,
                         type: 'scatter',
                         mode: 'lines+markers',
-                        marker: { color: '#A67B5B', size: 6 }
+                        marker: {color: graphColor, size:6},
+                        line: {width: 2}
                     };
-
+        
                     let layout = {
-                        title: "SIP Growth Over Time",
-                        xaxis: { title: "Years" },
-                        yaxis: { title: "Total Value (₹)" },
-                        paper_bgcolor: "#2E1F27",
-                        plot_bgcolor: "#2E1F27",
-                        font: { color: "#F4E1C1" }
+                        title: 'SIP Growth Over Time',
+                        xaxis: {title: 'Years', showgrid: false},
+                        yaxis: {title: 'Investment Value (₹)', showgrid: false},
+                        paper_bgcolor: "rgba(0,0,0,0)",
+                        plot_bgcolor: "rgba(0,0,0,0)",
+                        font: {color: graphColor}
                     };
-
-                    Plotly.newPlot('graph', [trace], layout);
-                    graphElement.style.display = "block"; // Show the graph
+        
+                    let config = {displayModeBar: false};
+        
+                    Plotly.newPlot('graph-container', [trace], layout, config);
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    document.getElementById('result').innerHTML = "Error calculating SIP. Please try again.";
+                    document.getElementById('result').innerHTML = "⚠️ Error calculating SIP. Please try again.";
                 });
             }
-
-            function clearResult() {
-                document.getElementById('result').innerHTML = "";
-                document.getElementById('graph').style.display = "none";
-            }
-
-            document.addEventListener("DOMContentLoaded", function () {
-                const themeToggle = document.getElementById("theme-toggle");
-                const body = document.body;
-
-                // Load saved theme preference from local storage
-                const savedTheme = localStorage.getItem("theme");
-
-                if (savedTheme === "light") {
-                    body.classList.add("light-mode");
-                    themeToggle.textContent = "🌙 Dark Mode";
-                } else {
-                    themeToggle.textContent = "☀️ Light Mode";
-                }
-
-                // Toggle function
-                themeToggle.addEventListener("click", function () {
-                    body.classList.toggle("light-mode");
-
-                    if (body.classList.contains("light-mode")) {
-                        localStorage.setItem("theme", "light");
-                        themeToggle.textContent = "🌙 Dark Mode";
-                    } else {
-                        localStorage.setItem("theme", "dark");
-                        themeToggle.textContent = "☀️ Light Mode";
-                    }
-                });
-            });
         </script>
+        
+
     </body>
 </html>

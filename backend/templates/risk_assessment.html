@@ -7,23 +7,20 @@
         <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
         <style>
-            @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
 
             body {
-                background-color: #2E1F27; /* Deep Brown */
-                text-align: center;
-                font-family: 'Poppins', sans-serif;
-                color: #D9C5A0; /* Beige */
+                background: url('/static/DarkMode.png');
+                background-size: cover;
+                font-family: 'Inter', sans-serif;
+                color: white;
                 margin: 0;
+                padding: 0;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
                 height: 100vh;
-                background: url('/static/DarkMode.png');
-                background-size: cover;
-                background-position: center;
-                transition: background 0.5s ease-in-out;
             }
 
             body.light-mode {
@@ -32,57 +29,193 @@
                 color: black;
             }
 
+            h2 {
+                color: #FACC15 !important;
+            }
+
+            body.light-mode h2 {
+                color: #3B82F6 !important;
+            }
+
             nav {
-                background-color: rgba(31, 22, 27, 0.9);
-                padding: 15px;
+                background-color: rgba(31, 22, 27, 0.5);
+                padding: 12px 20px;
                 text-align: center;
                 position: fixed;
-                top: 0;
+                top: 0px;
                 width: 100%;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+                backdrop-filter: blur(10px);
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+                border-radius: 0 0 15px 15px;
+            }
+
+            body.light-mode nav {
+                background-color: rgba(255, 255, 255, 0.4) !important;;
             }
 
             nav a {
-                color: #F4E1C1;
+                color: #FACC15;
                 text-decoration: none;
-                margin: 0 15px;
+                margin: 0 20px;
                 font-size: 18px;
                 font-weight: 600;
-                transition: color 0.3s;
+                transition: color 0.3s, transform 0.2s;
             }
 
             nav a:hover {
-                color: #A67B5B;
+                color: white;
+                transform: translateY(-2px);
             }
 
-            .navbar {
-                background-color: rgba(0, 0, 0, 0.6); /* Transparent dark for better contrast */
-                padding: 10px 20px;
-                border-radius: 8px;
+            body.light-mode nav a {
+                color: #3B82F6 !important;
             }
 
-            /* Light Mode Navbar */
-            body.light-mode .navbar {
-                background-color: rgba(255, 255, 255, 0.8);
-                color: black;
+            body.light-mode nav a:hover {
+                color: black !important;
             }
 
+            /* Theme Switch Position */
+            .theme-switch-container {
+                position: absolute;
+                top: 70px;
+                right: 20px;
+            }
 
-            .container {
-                background-color: rgba(255, 255, 255, 0.1);
-                padding: 30px;
-                border-radius: 15px;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            /* Theme Switch */
+            .theme-switch {
+                position: relative;
+                display: inline-block;
+                width: 50px;
+                height: 26px;
+            }
+
+            /* Hide Default CheckBox */
+            .theme-switch input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+
+            /* Slider */ 
+            .slider {
+                position: absolute;
+                cursor: pointer;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: #FACC15;
+                transition: 0.4s;
+                border-radius: 34px;
+            }
+
+            /* Rounded Slider */
+            .slider:before {
+                position: absolute;
+                content: "";
+                height: 18px;
+                width: 18px;
+                left: 4px;
+                bottom: 4px;
+                background-color: #2E1F27;
+                transition: 0.4s;
+                border-radius: 50%;
+            }
+
+            body.light-mode .slider {
+                background-color: #3B82F6 !important;
+            }
+
+            body.light-mode .slider:before {
+            transform: translateX(24px);
+                background-color: white !important;
+            }
+
+            /* Move the slider for Dark Mode */
+            input:checked + .slider {
+                background-color: #2E1F27;
+            }
+
+            /* Move the Toggle */
+            input:checked + .slider:before {
+                transform: translateX(24px);
+                background-color: #FACC15;
+            }
+
+            .main-container {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
                 width: 90%;
-                max-width: 600px;
-                margin: auto;
-                margin-top: 20px;
+                max-width: 1200px;
+                height: 85vh;
+                padding-top: 80px;
+            }
+
+            .left-section {
+                width: 50%;
+                text-align: center;
+            }
+
+            .right-section {
+                width: 45%;
+                padding-left: 50px;
+                text-align: left;
+            }
+
+            .left-section, .right-section {
+                background: none;
+            }
+
+            input {
+                width: 80%;
+                padding: 12px;
+                margin: 10px;
+                border-radius: 5px;
+                border: 1px solid #FACC15;
+                background: rgba(255, 255, 255, 0.2);
+                color: white;
+                font-size: 16px;
+            }
+
+            body.light-mode input {
+                color: black !important;
+                background: rgba(255, 255, 255, 0.8);
+                border: 1px solid #3B82F6 !important;
+            }
+
+            button {
+                background-color: #FACC15;
+                color: #2E1F27;
+                padding: 12px 25px;
+                font-size: 18px;
+                font-weight: 600;
+                border: none;
+                border-radius: 20px;
+                cursor: pointer;
+                transition: all 0.3s;
+            }
+
+            body.light-mode button {
+                background-color: #3B82F6;
+                color: white !important;
+            }
+
+            button:hover {
+                background-color: #FFD700;
+            }
+
+            body.light-mode button:hover {
+                background-color: #2563EB !important;
             }
 
             #risk-graph {
                 width: 100%;
                 height: 400px;
+                margin-top: 20px;
             }
+        
         </style>
     </head>
 
@@ -92,58 +225,119 @@
             <a href="/calculator">SIP Calculator</a>
             <a href="/market_trends">Market Trends</a>
             <a href="/risk_assessment">Risk Assessment</a>
-            <button id="theme-toggle">🌙 Switch Mode</button>
         </nav>
 
-        <h1>Risk Assessment</h1>
-
-        <div class="container">
-            <h2>Determine your Investment Risk Level</h2>
-            <input type="number" id="sip_amount" placeholder="Monthly Investment">
-            <input type="number" id="years" placeholder="Duration (Years)">
-            <input type="number" id="return_rate" placeholder="Expected Return Rate">
-            <button onclick="assessRisk()">Check Risk Level</button>
+        <div class="theme-switch-container">
+            <label class="theme-switch">
+                <input type="checkbox" id="theme-toggle">
+                <span class="slider"></span>
+            </label>
         </div>
 
-        <div class="container">
-            <h3>Your Risk Level: <span id="risk-category">-</span></h3>
-            <div id="risk-graph"></div>
+
+        <div class="main-container">
+            <div class="left-section">
+                <h2>Risk Assessment</h2>
+                <input type="number" id="sip_amount" placeholder="Monthly Investment">
+                <input type="number" id="years" placeholder="Duration in Years">
+                <input type="number" id="return_rate" placeholder="Expected Return Rate">
+                <button onclick="assessRisk()">Check Risk</button>
+                <h3>Your Risk Level: <span id="risk-category">-</span></h3>
+                <div id="risk-graph"></div>
+            </div>
+
+            <div class="right-section">
+                <h2>What is Risk Assessment in SIPs?</h2>
+                <p>Risk assessment in SIPs helps investors understand their risk exposure based on factors like investment duration, return expectations, and market conditions.</p>
+
+                <h2>How is Risk categorised?</h2>
+                <p>Investment risks are generally contegorised into three levels:</p>
+                <ul>
+                    <li>🟢 Conservative – Low risk, stable returns.</li>
+                    <li>🟡 Moderate – Balanced risk and returns.</li>
+                    <li>🔴 Aggressive – High risk, potentially high returns.</li>
+                </ul>
+
+                <h2>How to minimize Risks?</h2>
+                <p>To reduce investment risks:</p>
+                <ul>
+                    <li>📈 Diversify your investments.</li>
+                    <li>📊 Opt for longer durations to absorb market fluctuations.</li>
+                    <li>🔍 Regularly review your portfolio.</li>
+                    <li>⚡ Choose SIPs that align with your risk tolerance.</li>
+                </ul>
+            </div>
         </div>
 
         <script>
-            function assessRisk() {
-                let sip_amount = document.getElementById('sip_amount').value;
-                let years = document.getElementById('years').value;
-                let return_rate = document.getElementById('return_rate').value;
 
+            document.addEventListener('DOMContentLoaded', function() {
+                const themeToggle = document.getElementById('theme-toggle');
+                const body = document.body;
+        
+                const savedTheme = localStorage.getItem('theme');
+        
+                if (savedTheme === 'light') {
+                    body.classList.add('light-mode');
+                    themeToggle.checked = true;
+                } else  {
+                    themeToggle.checked = false;
+                }
+        
+                themeToggle.addEventListener("change", function() {
+                    if (themeToggle.checked) {
+                        body.classList.add('light-mode');
+                        localStorage.setItem('theme', 'light');
+                    } else {
+                        body.classList.remove('light-mode');
+                        localStorage.setItem('theme', 'dark');
+                    }
+                });
+            });
+
+            function assessRisk() {
+                let sip_amount = parseFloat(document.getElementById('sip_amount').value);
+                let years = parseFloat(document.getElementById('years').value);
+                let return_rate = parseFloat(document.getElementById('return_rate').value);
+        
+                // Ensure all inputs are valid numbers
+                if (isNaN(sip_amount) || isNaN(years) || isNaN(return_rate)) {
+                    document.getElementById('risk-category').innerText = "⚠️ Please enter valid numbers.";
+                    return;
+                }
+        
                 fetch('/calculate_sip', {
                     method: 'POST', 
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
-                        monthly_investment: parseFloat(sip_amount),
-                        years: parseFloat(years),
-                        annual_return: parseFloat(return_rate),
+                        monthly_investment: sip_amount,
+                        years: years,
+                        annual_return: return_rate,
                         annual_increase: 0
                     })
                 })
                 .then(response => response.json())
                 .then(data => {
                     console.log("Received Risk Data:", data);
-
+        
                     if (data.error) {
-                        document.getElementById('risk-category').innerText = "Error loading risk.";
+                        document.getElementById('risk-category').innerText = "⚠️ Error loading risk.";
                         return;
-                    return;
-
-                    document.getElementById('risk-category').innerText = data.risk_category;
                     }
 
+                    let body = document.body;
+                    let graphColor = body.classList.contains('light-mode') ? '#3B82F6' : '#FACC15';
+        
+                    // Display the Risk Category
+                    document.getElementById('risk-category').innerText = data.risk_category;
+        
+                    // Define Risk Category Colors
                     let colors = {
                         "Conservative": "green",
                         "Moderate": "yellow", 
                         "Aggressive": "red"
                     };
-
+        
                     let trace = {
                         x: ["Conservative", "Moderate", "Aggressive"],
                         y: [
@@ -154,52 +348,26 @@
                         type: "bar", 
                         marker: {color: colors[data.risk_category]}
                     };
-
+        
                     let layout = {
                         title: "Risk Level Distribution", 
                         xaxis: {title: "Risk Categories"},
                         yaxis: {title: "Your Risk Level"},
-                        paper_bgcolor: "#2E1F27",
-                        plot_bgcolor: "#2E1F27",
-                        font: {color: "#F4E1C1"}
+                        paper_bgcolor: "rgba(0,0,0,0)",
+                        plot_bgcolor: "rgba(0,0,0,0)",
+                        font: {color: graphColor}
                     };
 
-                    Plotly.newPlot('risk-graph', [trace], layout);
+                    let config = {displayModeBar: false}
+        
+                    Plotly.newPlot('risk-graph', [trace], layout, config);
                 })
-
                 .catch(error => {
                     console.error("Error fetching Risk Data:", error);
-                    document.getElementById('risk-category').innerText = "Error calculating risk.";
+                    document.getElementById('risk-category').innerText = "⚠️ Error calculating risk.";
                 });
             }
-
-            document.addEventListener("DOMContentLoaded", function () {
-                const themeToggle = document.getElementById("theme-toggle");
-                const body = document.body;
-
-                // Load saved theme preference from local storage
-                const savedTheme = localStorage.getItem("theme");
-
-                if (savedTheme === "light") {
-                    body.classList.add("light-mode");
-                    themeToggle.textContent = "🌙 Dark Mode";
-                } else {
-                    themeToggle.textContent = "☀️ Light Mode";
-                }
-
-                // Toggle function
-                themeToggle.addEventListener("click", function () {
-                    body.classList.toggle("light-mode");
-
-                    if (body.classList.contains("light-mode")) {
-                        localStorage.setItem("theme", "light");
-                        themeToggle.textContent = "🌙 Dark Mode";
-                    } else {
-                        localStorage.setItem("theme", "dark");
-                        themeToggle.textContent = "☀️ Light Mode";
-                    }
-                });
-            });
         </script>
+        
     </body>
 </html>
