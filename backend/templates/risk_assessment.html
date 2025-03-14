@@ -21,6 +21,10 @@
                 align-items: center;
                 justify-content: center;
                 height: 100vh;
+                background-size: cover !important;
+                background-position: center center !important;
+                background-repeat: no-repeat !important;
+                background-attachment: fixed;
             }
 
             body.light-mode {
@@ -222,9 +226,14 @@
     <body>
         <nav>
             <a href="/">Home</a>
+            <b>|</b>
             <a href="/calculator">SIP Calculator</a>
+            <b>|</b>
             <a href="/market_trends">Market Trends</a>
+            <b>|</b>
             <a href="/risk_assessment">Risk Assessment</a>
+            <b>|</b>
+            <a href="/about">About</a>
         </nav>
 
         <div class="theme-switch-container">
@@ -248,14 +257,14 @@
 
             <div class="right-section">
                 <h2>What is Risk Assessment in SIPs?</h2>
-                <p>Risk assessment in SIPs helps investors understand their risk exposure based on factors like investment duration, return expectations, and market conditions.</p>
+                <p><b>Risk Assessment</b> in SIPs helps investors understand their risk exposure based on factors like investment duration, return expectations, and market conditions.</p>
 
                 <h2>How is Risk categorised?</h2>
                 <p>Investment risks are generally contegorised into three levels:</p>
                 <ul>
-                    <li>🟢 Conservative – Low risk, stable returns.</li>
-                    <li>🟡 Moderate – Balanced risk and returns.</li>
-                    <li>🔴 Aggressive – High risk, potentially high returns.</li>
+                    <li><b>🟢 Conservative</b> – Low risk, stable returns.</li>
+                    <li><b>🟡 Moderate</b> – Balanced risk and returns.</li>
+                    <li><b>🔴 Aggressive</b> – High risk, potentially high returns.</li>
                 </ul>
 
                 <h2>How to minimize Risks?</h2>
@@ -292,8 +301,14 @@
                         body.classList.remove('light-mode');
                         localStorage.setItem('theme', 'dark');
                     }
+
+                    updateGraphs(); // Force Update Graphs on Toggle
                 });
             });
+
+            function updateGraphs() {
+                assessRisk();
+            }
 
             function assessRisk() {
                 let sip_amount = parseFloat(document.getElementById('sip_amount').value);
@@ -326,17 +341,17 @@
                     }
 
                     let body = document.body;
-                    let graphColor = body.classList.contains('light-mode') ? '#3B82F6' : '#FACC15';
+                    let isLightMode = body.classList.contains("light-mode");
+
+                    let textColor = isLightMode ? "3B82F6" : "#FACC15";  
+                    let graphColor = isLightMode ? "#3B82F6" : "#FACC15";  
+                    let gridColor = isLightMode ? "black" : "white";  
+                    let bgColor = "rgba(0,0,0,0)";
         
                     // Display the Risk Category
                     document.getElementById('risk-category').innerText = data.risk_category;
         
                     // Define Risk Category Colors
-                    let colors = {
-                        "Conservative": "green",
-                        "Moderate": "yellow", 
-                        "Aggressive": "red"
-                    };
         
                     let trace = {
                         x: ["Conservative", "Moderate", "Aggressive"],
@@ -346,16 +361,17 @@
                             data.risk_category === "Aggressive" ? 1 : 0
                         ],
                         type: "bar", 
-                        marker: {color: colors[data.risk_category]}
+                        marker: {color: graphColor, size: 6},
+                        line: {color: graphColor, width: 3}
                     };
         
                     let layout = {
                         title: "Risk Level Distribution", 
-                        xaxis: {title: "Risk Categories"},
-                        yaxis: {title: "Your Risk Level"},
-                        paper_bgcolor: "rgba(0,0,0,0)",
-                        plot_bgcolor: "rgba(0,0,0,0)",
-                        font: {color: graphColor}
+                        xaxis: {title: "Risk Categories", showgrid: true, gridcolor: gridColor},
+                        yaxis: {title: "Your Risk Level", showgrid: true, gridcolor: gridColor},
+                        paper_bgcolor: bgColor,
+                        plot_bgcolor: bgColor,
+                        font: {color: textColor}
                     };
 
                     let config = {displayModeBar: false}

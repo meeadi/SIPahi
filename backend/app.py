@@ -110,5 +110,10 @@ def risk_assessment():
     """ Serve the risk assessment page """
     return render_template('risk_assessment.html')
 
+@app.route('/about')
+def about():
+    """ Serve the About page """
+    return render_template('about.html')
+
 if __name__ == '__main__':
     app.run(debug=True)

@@ -21,6 +21,10 @@
                 align-items: center;
                 justify-content: center;
                 height: 100vh;
+                background-size: cover !important;
+                background-position: center center !important;
+                background-repeat: no-repeat !important;
+                background-attachment: fixed;
             }
 
             body.light-mode {
@@ -93,6 +97,7 @@
             .right-section {
                 width: 45%;
                 padding-left: 50px;
+                
             }
 
             .left-section, .right-section {
@@ -216,9 +221,14 @@
         
         <nav>
             <a href="/">Home</a>
+            <b>|</b>
             <a href="/calculator">SIP Calculator</a>
+            <b>|</b>
             <a href="/market_trends">Market Trends</a>
+            <b>|</b>
             <a href="/risk_assessment">Risk Assessment</a>
+            <b>|</b>
+            <a href="/about">About</a>
         </nav>
 
         <div class="theme-switch-container">
@@ -241,27 +251,34 @@
             </div>
 
             <div class="right-section">
-                <h2>What are SIPs?</h2>
-                <p>A Systematic Investment Plan (SIP) is a disciplined way to invest a fixed amount in mutual funds at regular intervals. It helps in wealth creation through compounding and rupee cost averaging.</p>
-
-                <h2>Why Invest in SIPs?</h2>
-                <p>Investing through SIPs is beneficial because:</p>
-                <ul>
-                    <li>✅ Invest Small, Grow Big – Start investing with as little as ₹500 per month.</li>
-                    <li>✅ Reduces Market Risk – Avoids the need to time the market.</li>
-                    <li>✅ Compounding Returns – Small, consistent investments grow significantly over time.</li>
-                    <li>✅ Flexibility & Discipline – Investors can start, stop, or modify SIPs anytime.</li>
-                </ul>
-
-                <h2>How Can SIP Calculators Benefit You?</h2>
-                <p>A SIP calculator helps in:</p>
-                <ul>
-                    <li>📊 Estimating Future Wealth – Get an approximate value of your investments over time.</li>
-                    <li>📈 Better Financial Planning – Know how much to invest monthly for your goals.</li>
-                    <li>⚡ Quick & Hassle-Free – No manual calculations; just enter your details and get results instantly.</li>
-                    <li>🔍 Comparing Investment Scenarios – Understand how different SIP amounts and durations impact your returns.</li>
-                </ul>
+                <div>
+                    <h2>What are SIPs?</h2>
+                    <p>A <b>Systematic Investment Plan (SIP)</b> is a disciplined way to invest a fixed amount in mutual funds at regular intervals.</p>
+                </div>
+            
+                <div>
+                    <h2>Why Invest in SIPs?</h2>
+                    <p>Investing through SIPs is beneficial because:</p>
+                    <ul>
+                        <li><b>✅ Invest Small, Grow Big</b> – Start with as little as ₹500 per month.</li>
+                        <li><b>✅ Reduces Market Risk</b> – Avoids the need to time the market.</li>
+                        <li><b>✅ Compounding Returns</b> – Small, consistent investments grow significantly over time.</li>
+                        <li><b>✅ Flexibility & Discipline</b> – Investors can start, stop, or modify SIPs anytime.</li>
+                    </ul>
+                </div>
+            
+                <div>
+                    <h2>How Can SIP Calculators Benefit You?</h2>
+                    <p>A SIP calculator helps in:</p>
+                    <ul>
+                        <li><b>📊 Estimating Future Wealth</b> – Get an approximate value of your investments over time.</li>
+                        <li><b>📈 Better Financial Planning</b> – Know how much to invest monthly for your goals.</li>
+                        <li><b>⚡ Quick & Hassle-Free</b> – No manual calculations; just enter your details and get results instantly.</li>
+                        <li><b>🔍 Comparing Investment Scenarios</b> – Understand how different SIP amounts and durations impact your returns.</li>
+                    </ul>
+                </div>
             </div>
+            
         </div>
 
         <script>
@@ -274,17 +291,22 @@
                 if (savedTheme === 'light') {
                     body.classList.add('light-mode');
                     themeToggle.checked = true;
-                } else  {
+                } else {
                     themeToggle.checked = false;
                 }
         
                 themeToggle.addEventListener("change", function() {
-                    if (themeToggle.checked) {
-                        body.classList.add('light-mode');
+                    body.classList.toggle('light-mode');
+        
+                    if (body.classList.contains('light-mode')) {
                         localStorage.setItem('theme', 'light');
                     } else {
-                        body.classList.remove('light-mode');
                         localStorage.setItem('theme', 'dark');
+                    }
+        
+                    // Only update the graph if data is available
+                    if (document.getElementById('result').innerHTML !== "") {
+                        updateGraphs();
                     }
                 });
             });
@@ -314,26 +336,31 @@
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById('result').innerHTML = `<h3>Expected Returns: ₹${data.final_amount.toLocaleString()}</h3>`;
-                    
+        
                     let body = document.body;
-                    let graphColor = body.classList.contains('light-mode') ? '#3B82F6' : '#FACC15';
-
+                    let isLightMode = body.classList.contains('light-mode'); // Fixed classList check
+        
+                    let textColor = isLightMode ? "#3B82F6" : "#FACC15";  
+                    let graphColor = isLightMode ? "#3B82F6" : "#FACC15";  
+                    let gridColor = isLightMode ? "#3B82F6" : "#FACC15";  // Light gray for light mode, dark gray for dark mode
+                    let bgColor = "rgba(0,0,0,0)";
+        
                     let trace = {
                         x: data.years, 
                         y: data.values,
                         type: 'scatter',
                         mode: 'lines+markers',
-                        marker: {color: graphColor, size:6},
-                        line: {width: 2}
+                        marker: {color: graphColor, size: 6},
+                        line: {color: graphColor, width: 3}
                     };
         
                     let layout = {
                         title: 'SIP Growth Over Time',
-                        xaxis: {title: 'Years', showgrid: false},
-                        yaxis: {title: 'Investment Value (₹)', showgrid: false},
-                        paper_bgcolor: "rgba(0,0,0,0)",
-                        plot_bgcolor: "rgba(0,0,0,0)",
-                        font: {color: graphColor}
+                        xaxis: {title: 'Years', showgrid: true, gridcolor: gridColor},
+                        yaxis: {title: 'Investment Value (₹)', showgrid: true, gridcolor: gridColor},
+                        paper_bgcolor: bgColor,
+                        plot_bgcolor: bgColor,
+                        font: {color: textColor}
                     };
         
                     let config = {displayModeBar: false};
@@ -345,8 +372,13 @@
                     document.getElementById('result').innerHTML = "⚠️ Error calculating SIP. Please try again.";
                 });
             }
-        </script>
         
+            function updateGraphs() {
+                if (document.getElementById('result').innerHTML !== "") {
+                    calculateSIP();
+                }
+            }
+        </script>        
 
     </body>
 </html>

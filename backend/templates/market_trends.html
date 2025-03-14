@@ -10,20 +10,21 @@
             @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
             body {
-                background-color: #2E1F27; /* Deep Brown */
-                text-align: center;
-                font-family: 'Poppins', sans-serif;
-                color: #D9C5A0; /* Beige */
+                background: url('/static/DarkMode.png');
+                background-size: cover;
+                font-family: 'Inter', sans-serif;
+                color: white;
                 margin: 0;
+                padding: 0;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
                 height: 100vh;
-                background: url('/static/DarkMode.png');
-                background-size: cover;
-                background-position: center;
-                transition: background 0.5s ease-in-out;
+                background-size: cover !important;
+                background-position: center center !important;
+                background-repeat: no-repeat !important;
+                background-attachment: fixed;
             }
 
             body.light-mode {
@@ -32,83 +33,213 @@
                 color: black;
             }
 
+            h2 {
+                color: #FACC15 !important;
+            }
+
+            body.light-mode h2 {
+                color: #3B82F6 !important;
+            }
+
             nav {
-                background-color: rgba(31, 22, 27, 0.9);
-                padding: 15px;
+                background-color: rgba(31, 22, 27, 0.5);
+                padding: 12px 20px;
                 text-align: center;
                 position: fixed;
-                top: 0;
+                top: 0px;
                 width: 100%;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+                backdrop-filter: blur(10px);
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+                border-radius: 0 0 15px 15px;
+            }
+
+            body.light-mode nav {
+                background-color: rgba(255, 255, 255, 0.4) !important;;
             }
 
             nav a {
-                color: #F4E1C1;
+                color: #FACC15;
                 text-decoration: none;
-                margin: 0 15px;
+                margin: 0 20px;
                 font-size: 18px;
                 font-weight: 600;
-                transition: color 0.3s;
+                transition: color 0.3s, transform 0.2s;
             }
 
             nav a:hover {
-                color: #A67B5B;
+                color: white;
+                transform: translateY(-2px);
             }
 
-            .navbar {
-                background-color: rgba(0, 0, 0, 0.6); /* Transparent dark for better contrast */
-                padding: 10px 20px;
-                border-radius: 8px;
+            body.light-mode nav a {
+                color: #3B82F6 !important;
             }
 
-            /* Light Mode Navbar */
-            body.light-mode .navbar {
-                background-color: rgba(255, 255, 255, 0.8);
-                color: black;
+            body.light-mode nav a:hover {
+                color: black !important;
             }
 
+            /* Theme Switch Position */
+            .theme-switch-container {
+                position: absolute;
+                top: 70px;
+                right: 20px;
+            }
 
-            .container {
-                background-color: rgba(255, 255, 255, 0.1);
-                padding: 30px;
-                border-radius: 15px;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            /* Theme Switch */
+            .theme-switch {
+                position: relative;
+                display: inline-block;
+                width: 50px;
+                height: 26px;
+            }
+
+            /* Hide Default CheckBox */
+            .theme-switch input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+
+            /* Slider */ 
+            .slider {
+                position: absolute;
+                cursor: pointer;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: #FACC15;
+                transition: 0.4s;
+                border-radius: 34px;
+            }
+
+            /* Rounded Slider */
+            .slider:before {
+                position: absolute;
+                content: "";
+                height: 18px;
+                width: 18px;
+                left: 4px;
+                bottom: 4px;
+                background-color: #2E1F27;
+                transition: 0.4s;
+                border-radius: 50%;
+            }
+
+            body.light-mode .slider {
+                background-color: #3B82F6 !important;
+            }
+
+            body.light-mode .slider:before {
+            transform: translateX(24px);
+                background-color: white !important;
+            }
+
+            /* Move the slider for Dark Mode */
+            input:checked + .slider {
+                background-color: #2E1F27;
+            }
+
+            /* Move the Toggle */
+            input:checked + .slider:before {
+                transform: translateX(24px);
+                background-color: #FACC15;
+            }
+
+            .main-container {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
                 width: 90%;
-                max-width: 600px;
-                margin: auto;
-                margin-top: 20px;
+                max-width: 1200px;
+                height: 85vh;
+                padding-top: 80px;
+            }
+
+            .left-section {
+                width: 50%;
+                text-align: center;
+            }
+
+            .right-section {
+                width: 45%;
+                padding-left: 50px;
+                text-align: left;
+            }
+
+            .left-section, .right-section {
+                background: none;
             }
 
             #market-graph {
                 width: 100%;
                 height: 400px;
+                margin-top: 20px;
+                background: transparent;
             }
+
         </style>
     </head>
 
     <body>
         <nav>
             <a href="/">Home</a>
+            <b>|</b>
             <a href="/calculator">SIP Calculator</a>
+            <b>|</b>
             <a href="/market_trends">Market Trends</a>
-            <a href="/risk_assessment">Risk Assessment</a>
-            <button id="theme-toggle">🌙 Switch Mode</button>   
+            <b>|</b>
+            <a href="/risk_assessment">Risk Assessment</a> 
+            <b>|</b>
+            <a href="about">About</a>
         </nav>
 
-        <h1>Market Trends</h1>
-
-        <div class="container">
-            <h2>Live Market Data</h2>
-            <p><b>Date: </b><span id="market-date">Loading...</span></p>
-            <p><b>Open: </b>Rs. <span id="market-open">Loading...</span></p>
-            <p><b>High: </b>Rs. <span id="market-high">Loading...</span></p>
-            <p><b>Low: </b>Rs. <span id="market-low">Loading...</span></p>
-            <p><b>Close: </b>Rs. <span id="market-close">Loading...</span></p>
+        <div class="theme-switch-container">
+            <label class="theme-switch">
+                <input type="checkbox" id="theme-toggle">
+                <span class="slider"></span>
+            </label>
         </div>
 
-        <div class="container">
-            <h2>Market Performance (Last 30 Days)</h2>
-            <div id="market-graph"></div>
+        <div class="main-container">
+            <div class="left-section">
+                <h2>Live Market Trends</h2>
+                <p><b>Date: </b><span id="market-date">Loading...</span></p>
+                <p><b>Open: </b>Rs. <span id="market-open">Loading...</span></p>
+                <p><b>High: </b>Rs. <span id="market-high">Loading...</span></p>
+                <p><b>Low: </b>Rs. <span id="market-low">Loading...</span></p>
+                <p><b>Close: </b>Rs. <span id="market-close">Loading...</span></p>
+                <h2>Market Performance (Last 30 Days)</h2>
+                <div id="market-graph"></div>
+            </div>
+
+            <div class="right-section">
+                <h2>How Market Trends affect SIPs?</h2>
+                <p>SIPs are great for long-term wealth building, but market trends still impact returns. Here's how:</p>
+                <ul>
+                    <li><b>Bullish Market (📈 Uptrend)</b> - Your SIP Investments grow faster due to rising asset values.</li>
+                    <li><b>Bearish Market (📉 Downtrend)</b> - Buying at lower prices increases the chances for higher returns when the market recovers.</li>
+                    <li><b>Volatile Market (🔄 Sideways)</b> - Markets move unpredictably; SIPs average out highs and lows.</li>
+                </ul>
+
+                <h2>How to use Market Trends for Smarter SIP Investing?</h2>
+                <p>Best practices to make the most of SIP Investments using Market Trends:</p>
+                <ul>
+                    <li><b>✅ Stay Consistent</b> - Stick to your SIP investment plan regardless of short-term market noise.</li>
+                    <li><b>🔄 Increase SIP Contributions During Bear Markets</b> - Buy more untis at cheaper prices.</li>
+                    <li><b>📊 Use Trend Indicators to Adjust Asset Allocation</b> - Shift funds between Mutual stocks, debt, or gold as trends change.</li>
+                    <li><b>⚡ Diversify Your Portfolio</b> - Invest in different sectors to reduce overall risk.</li>
+                </ul>
+
+                <h2>Key Indicators used to Analyze Market Trends</h2>
+                <p>Investors use various tools to analyze trends, some Key Indicators include:</p>
+                <ul>
+                    <li><b>Moving Averages (SMA & EMA)</b> - Helps smooth out price fluctuations and show the overall market direction.</li>
+                    <li><b>Relative Strength Index (RSI)</b> - Measures Market Momentum (whether an asset is overbought or oversold).</li>
+                    <li><b>MACD (Moving Average Convergence Divergence)</b> - Shows trend strengths and possible reversals.</li>
+                </ul>
+            </div>
         </div>
 
         <script>
@@ -133,24 +264,36 @@
                 fetch('/market_trend_graph')
                 .then(response => response.json())
                 .then(data => {
+
+                    let body = document.body;
+                    let isLightMode = body.classList.contains('light-mode');
+
+                    let textColor = isLightMode ? "3B82F6" : "#FACC15";  
+                    let graphColor = isLightMode ? "#3B82F6" : "#FACC15";  
+                    let gridColor = isLightMode ? "black" : "white";  
+                    let bgColor = "rgba(0,0,0,0)";
+
                     let trace = {
                         x: data.dates,
                         y: data.prices,
                         type: 'scatter',
                         mode: 'lines+markers',
-                        marker: {color: '#A67B5B', size:6}
+                        marker: { color: graphColor, size: 6 },
+                        line: { color: graphColor, width: 3 }
                     };
 
                     let layout = {
                         title: "Market Performance over last 30 Days.",
-                        xaxis: {title: "Date"},
-                        yaxis: {title: "Price (INR)"},
-                        plot_bgcolor: '#2E1F27',
-                        paper_bgcolor: '#2E1F27',
-                        font: {color: '#FAE1C1'}
+                        xaxis: {title: "Date", showgrid: true, gridcolor: gridColor},
+                        yaxis: {title: "Price (INR)", showgrid: true, gridcolor: gridColor},
+                        plot_bgcolor: 'rgba(0,0,0,0)',
+                        paper_bgcolor: 'rgba(0,0,0,0)',
+                        font: {color: textColor}
                     };
 
-                    Plotly.newPlot('market-graph', [trace], layout);
+                    let config = {displayModeBar: false};
+
+                    Plotly.newPlot('market-graph', [trace], layout, config);
                 })
 
                 .catch(error => console.error("Error Fetching Market Graph:", error));
@@ -186,8 +329,15 @@
                         localStorage.setItem("theme", "dark");
                         themeToggle.textContent = "☀️ Light Mode";
                     }
+
+                    updateGraphs();
                 });
          });
+
+         function updateGraphs() {
+            fetchMarketData();
+            fetchMarketGraph();
+         }
         </script>
     </body>
 </html>
