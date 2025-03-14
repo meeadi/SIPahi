@@ -20,15 +20,15 @@ SIPahi is a web-based financial tool designed to help users calculate and analyz
 
 - Backend - Flask (Python)
 - Data Analysis - Numpy, Pandas
-- Visualization - Matplotlib, Seaborn
-- Frontend - HTML, CSS, Bootstrap
+- Visualization - Plotly
+- Frontend - HTML, CSS, JavaScript
 - Version Control - Git and GitHub
-- Deployment - Heroku / Vercel
+- Deployment - Heroku / Vercel (Planned)
 
 # Project Structure
 
 - backend / Flask API and SIP Calculations
-- frontend / HTML, CSS, Bootstrap for UI
+- frontend / HTML, CSS, JavaScript for UI
 - docs / Documentation and Reports
 - tests / Test Cases for SIP calculations
 - requirements.txt / Dependencies List
